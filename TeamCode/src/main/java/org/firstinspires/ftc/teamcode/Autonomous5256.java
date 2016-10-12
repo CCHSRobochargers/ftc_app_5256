@@ -33,15 +33,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="Autonomous", group="5256")  // @Autonomous(...) is the other common choice
+@Autonomous(name="Autonomous", group="5256")  // @Autonomous(...) is the other common choice
 //@Disabled
-public class Autonomous extends LinearOpMode {
+public class Autonomous5256 extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     DcMotor motorR;
     DcMotor motorL;
