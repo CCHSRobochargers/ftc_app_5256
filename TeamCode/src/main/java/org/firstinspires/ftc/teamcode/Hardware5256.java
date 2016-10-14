@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -20,6 +21,8 @@ public class Hardware5256
     /* Public OpMode members. */
     public DcMotor  leftMotor   = null;
     public DcMotor  rightMotor  = null;
+    public DcMotor rightShoot = null;
+    public DcMotor leftShoot = null;
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
@@ -38,8 +41,13 @@ public class Hardware5256
         // Define and Initialize Motors
         leftMotor   = hwMap.dcMotor.get("motorL");
         rightMotor  = hwMap.dcMotor.get("motorR");
+        rightShoot = hwMap.dcMotor.get("rShoot");
+        leftShoot = hwMap.dcMotor.get("lShoot");
         leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
+        rightShoot.setDirection(DcMotor.Direction.FORWARD);
+        leftShoot.setDirection(DcMotor.Direction.REVERSE);
+
 
         // Set all motors to zero power
         leftMotor.setPower(0);
