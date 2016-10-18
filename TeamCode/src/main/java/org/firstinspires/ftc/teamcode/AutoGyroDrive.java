@@ -106,6 +106,7 @@ public class AutoGyroDrive extends LinearOpMode {
          */
         robot.init(hardwareMap);
         gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
+        double heading = 0.0;
 
         // Ensure the robot it stationary, then reset the encoders and calibrate the gyro.
         robot.leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -140,20 +141,31 @@ public class AutoGyroDrive extends LinearOpMode {
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
         // Put a hold after each turn
-        gyroDrive(DRIVE_SPEED, 26.0, 0.0);
-        gyroTurn( TURN_SPEED, -45.0);
-        gyroDrive(DRIVE_SPEED, 36.0, -45.0);
-        gyroTurn(TURN_SPEED, 90.0);
-        gyroHold(TURN_SPEED, 90.0, 5.0);
-        gyroTurn(TURN_SPEED, 0.0);
-        gyroHold(TURN_SPEED, 0.0, 5.0);
-        gyroTurn(TURN_SPEED, -90.0);
-        gyroHold(TURN_SPEED, -90.0, 5.0);
-
-
+        gyroDrive(DRIVE_SPEED, 28.0, heading);
+        heading = heading - 45;
+        gyroTurn( TURN_SPEED, heading);
+        gyroDrive(DRIVE_SPEED, 102.0, heading);
+        heading = heading + 45.0;
+       gyroTurn(TURN_SPEED, heading);
+       gyroDrive(DRIVE_SPEED, -48.0, heading);
+        gyroDrive(DRIVE_SPEED, -48.0, heading);
+        heading = heading + 90.0;
+        gyroTurn(TURN_SPEED, heading);
+        gyroDrive(DRIVE_SPEED, + 48.0, heading);
+//        heading = heading - 90;
+//        gyroTurn(TURN_SPEED, heading);
+//        gyroDrive(DRIVE_SPEED, 12.0, heading);
+//        heading = heading + 90;
+//        gyroTurn(TURN_SPEED, heading);
+//        gyroDrive(DRIVE_SPEED, 6.0, heading);
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
+
+        while (!isStopRequested())  {
+            sleep(50);
+            idle();
+        }
     }
 
 
