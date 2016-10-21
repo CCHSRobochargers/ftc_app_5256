@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<Robot type="FirstInspires-FTC">
+    <DeviceInterfaceModule name="Device Interface Module 1" serialNumber="AI02RIGD">
+        <Gyro name="gyro" port="5" />
+    </DeviceInterfaceModule>
+    <MotorController name="Motor Controller 2" serialNumber="AL00VXQH">
+        <Motor name="motorL" port="1" />
+        <Motor name="motorR" port="2" />
+    </MotorController>
+    <MotorController name="Motor Controller 1" serialNumber="AL00XTMT">
+        <Motor name="rShoot" port="1" />
+        <Motor name="lShoot" port="2" />
+    </MotorController>
+    <LegacyModuleController name="Legacy Module 2" serialNumber="AL00XU3L">
+    </LegacyModuleController>
+</Robot>

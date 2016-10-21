@@ -142,13 +142,13 @@ public class AutoGyroDrive extends LinearOpMode {
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
         // Put a hold after each turn
         gyroDrive(DRIVE_SPEED, 5.0, heading);
-        heading = heading - 45;
+        heading = heading - 65;
         gyroTurn( TURN_SPEED, heading);
-        gyroDrive(DRIVE_SPEED, 46.0, heading);
-        heading = heading + 45.0;
-       gyroTurn(TURN_SPEED, heading);
-       gyroDrive(DRIVE_SPEED, 68, heading);
-        heading = heading + 45.0;
+        gyroDrive(DRIVE_SPEED, 74.0, heading);
+        heading = heading + 65.0;
+        gyroTurn(TURN_SPEED, heading);
+        gyroDrive(DRIVE_SPEED, 64, heading);
+        heading = heading - 45.0;
         gyroTurn(TURN_SPEED, heading);
         gyroDrive(DRIVE_SPEED, -64.0, heading);
 //        heading = heading - 90;
