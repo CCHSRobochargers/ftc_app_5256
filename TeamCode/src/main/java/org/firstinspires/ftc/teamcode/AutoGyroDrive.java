@@ -77,6 +77,8 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 //@Disabled
 public class AutoGyroDrive extends LinearOpMode {
 
+    enum Color {NONE, RED, GREEN, BLUE}
+
     /* Declare OpMode members. */
     Hardware5256         robot   = new Hardware5256();   // Use a Pushbot's hardware
     ModernRoboticsI2cGyro   gyro    = null;                    // Additional Gyro device
@@ -137,14 +139,14 @@ public class AutoGyroDrive extends LinearOpMode {
             idle();
         }
         gyro.resetZAxisIntegrator();
-
+        
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
         // Put a hold after each turn
         gyroDrive(DRIVE_SPEED, 5.0, heading);
         heading = heading - 65;
-        gyroTurn( TURN_SPEED, heading);
-        gyroDrive(DRIVE_SPEED, 74.0, heading);
+        gyroTurn(TURN_SPEED, heading);
+        gyroDrive(DRIVE_SPEED, 74.0, heading, Color.BLUE);
         heading = heading + 65.0;
         gyroTurn(TURN_SPEED, heading);
         gyroDrive(DRIVE_SPEED, 64, heading);
@@ -182,7 +184,8 @@ public class AutoGyroDrive extends LinearOpMode {
     */
     public void gyroDrive ( double speed,
                             double distance,
-                            double angle) {
+                            double angle,
+                            Color color) {
 
         int     newLeftTarget;
         int     newRightTarget;
@@ -239,6 +242,14 @@ public class AutoGyroDrive extends LinearOpMode {
                 robot.leftMotor.setPower(leftSpeed);
                 robot.rightMotor.setPower(rightSpeed);
 
+                if ((color == Color.RED) && (robot.beacon.red() > 0)) {
+                    break;
+                }
+
+                if ((color == Color.BLUE) && (robot.beacon.blue() > 0)) {
+                    break;
+                }
+
                 // Display drive status for the driver.
                 telemetry.addData("Err/St",  "%5.1f/%5.1f",  error, steer);
                 telemetry.addData("Target",  "%7d:%7d",      newLeftTarget,  newRightTarget);
@@ -256,6 +267,12 @@ public class AutoGyroDrive extends LinearOpMode {
             robot.leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
+    }
+
+    public void gyroDrive ( double speed,
+                            double distance,
+                            double angle) {
+        gyroDrive(speed, distance, angle, Color.NONE);
     }
 
     /**

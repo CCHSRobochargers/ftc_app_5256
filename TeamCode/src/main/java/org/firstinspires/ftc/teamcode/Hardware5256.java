@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -19,10 +20,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class Hardware5256
 {
     /* Public OpMode members. */
-    public DcMotor  leftMotor   = null;
-    public DcMotor  rightMotor  = null;
-    public DcMotor rightShoot = null;
-    public DcMotor leftShoot = null;
+    public DcMotor leftMotor   = null;
+    public DcMotor rightMotor  = null;
+    public DcMotor rightShoot  = null;
+    public DcMotor leftShoot   = null;
+    public ColorSensor beacon  = null;
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
@@ -43,11 +45,11 @@ public class Hardware5256
         rightMotor  = hwMap.dcMotor.get("motorR");
         rightShoot = hwMap.dcMotor.get("rShoot");
         leftShoot = hwMap.dcMotor.get("lShoot");
+        beacon = hwMap.colorSensor.get("beacon");
         leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
         rightShoot.setDirection(DcMotor.Direction.FORWARD);
         leftShoot.setDirection(DcMotor.Direction.REVERSE);
-
 
         // Set all motors to zero power
         leftMotor.setPower(0);
@@ -57,6 +59,8 @@ public class Hardware5256
         // May want to use RUN_USING_ENCODERS if encoders are installed.
         leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        beacon.enableLed(false);
     }
 
     /***
