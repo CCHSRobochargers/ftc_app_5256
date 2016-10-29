@@ -143,13 +143,15 @@ public class AutoGyroDrive extends LinearOpMode {
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
         // Put a hold after each turn
-        gyroDrive(DRIVE_SPEED, 5.0, heading);
+        gyroDrive(DRIVE_SPEED, 12.0, heading);
         heading = heading - 65;
         gyroTurn(TURN_SPEED, heading);
-        gyroDrive(DRIVE_SPEED, 74.0, heading, Color.BLUE);
+        gyroDrive(DRIVE_SPEED, 74.0, heading);
         heading = heading + 65.0;
         gyroTurn(TURN_SPEED, heading);
-        gyroDrive(DRIVE_SPEED, 64, heading);
+        gyroDrive(DRIVE_SPEED / 2.0, 64, heading, Color.BLUE);
+        if (robot.beacon.blue() > 0.0)
+            return;
         heading = heading - 45.0;
         gyroTurn(TURN_SPEED, heading);
         gyroDrive(DRIVE_SPEED, -64.0, heading);
