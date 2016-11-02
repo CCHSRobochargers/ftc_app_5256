@@ -45,7 +45,7 @@ public class Hardware5256
         rightMotor  = hwMap.dcMotor.get("motorR");
         rightShoot = hwMap.dcMotor.get("rShoot");
         leftShoot = hwMap.dcMotor.get("lShoot");
-        beacon = hwMap.colorSensor.get("beacon");
+//        beacon = hwMap.colorSensor.get("beacon");
         leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
         rightShoot.setDirection(DcMotor.Direction.FORWARD);
@@ -60,7 +60,7 @@ public class Hardware5256
         leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        beacon.enableLed(false);
+//        beacon.enableLed(false);
     }
 
     /***

@@ -72,13 +72,13 @@ public class TeleOp5256 extends LinearOpMode {
         boolean bblock = false;
         double rightDrive;
         double leftDrive;
-        int rightShootValue = 0;
-        int leftShootValue = 0;
+        double rightShootValue = 0.0;
+        double leftShootValue = 0.0;
 
         robot.leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         robot.rightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        robot.rightShoot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.leftShoot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rightShoot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.leftShoot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         /* eg: Initialize the hardware variables. Note that the strings used here as parameters
          * to 'get' must correspond to the names assigned during the robot configuration
@@ -110,12 +110,12 @@ public class TeleOp5256 extends LinearOpMode {
             robot.leftMotor.setPower(leftDrive);
 
             if(gamepad1.a && ablock == false){
-                if(rightShootValue < 100) {
-                    rightShootValue += 1;
-                    leftShootValue += 1;
+                if(rightShootValue < 1.0) {
+                    rightShootValue += 0.01;
+                    leftShootValue += 0.01;
                 }
-                robot.rightShoot.setPower((double)rightShootValue / 100.0);
-                robot.leftShoot.setPower((double)leftShootValue / 100.0);
+                robot.rightShoot.setPower(rightShootValue);
+                robot.leftShoot.setPower(leftShootValue);
                 ablock = true;
             }
 
@@ -124,11 +124,12 @@ public class TeleOp5256 extends LinearOpMode {
             }
 
             if(gamepad1.b && bblock == false){
-                if(rightShootValue > -100)
-                rightShootValue -= 1;
-                leftShootValue -= 1;
-                robot.rightShoot.setPower((double)rightShootValue / 100.0);
-                robot.leftShoot.setPower((double)leftShootValue / 100.0);
+                if(rightShootValue > -1.0) {
+                    rightShootValue -= 0.01;
+                    leftShootValue -= 0.01;
+                }
+                robot.rightShoot.setPower(rightShootValue);
+                robot.leftShoot.setPower(leftShootValue);
                 bblock = true;
             }
 
@@ -136,16 +137,11 @@ public class TeleOp5256 extends LinearOpMode {
                 bblock = false;
             }
 
-
             // eg: Run wheels in tank mode (note: The joystick goes negative when pushed forwards)
             // leftMotor.setPower(-gamepad1.left_stick_y);
             // rightMotor.setPower(-gamepad1.right_stick_y);
 
             idle(); // Always call idle() at the bottom of your while(opModeIsActive()) loop
         }
-
-
-
-
     }
 }

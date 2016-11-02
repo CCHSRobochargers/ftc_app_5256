@@ -150,8 +150,8 @@ public class AutoGyroDrive extends LinearOpMode {
         heading = heading + 65.0;
         gyroTurn(TURN_SPEED, heading);
         gyroDrive(DRIVE_SPEED / 2.0, 64, heading, Color.BLUE);
-        if (robot.beacon.blue() > 0.0)
-            return;
+//        if (robot.beacon.blue() > 0.0)
+//            return;
         heading = heading - 45.0;
         gyroTurn(TURN_SPEED, heading);
         gyroDrive(DRIVE_SPEED, -64.0, heading);
@@ -244,13 +244,13 @@ public class AutoGyroDrive extends LinearOpMode {
                 robot.leftMotor.setPower(leftSpeed);
                 robot.rightMotor.setPower(rightSpeed);
 
-                if ((color == Color.RED) && (robot.beacon.red() > 0)) {
-                    break;
-                }
-
-                if ((color == Color.BLUE) && (robot.beacon.blue() > 0)) {
-                    break;
-                }
+//                if ((color == Color.RED) && (robot.beacon.red() > 0)) {
+//                    break;
+//                }
+//
+//                if ((color == Color.BLUE) && (robot.beacon.blue() > 0)) {
+//                    break;
+//                }
 
                 // Display drive status for the driver.
                 telemetry.addData("Err/St",  "%5.1f/%5.1f",  error, steer);
