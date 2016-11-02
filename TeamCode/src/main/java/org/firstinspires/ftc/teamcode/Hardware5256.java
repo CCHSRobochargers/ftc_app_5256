@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -20,11 +21,15 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class Hardware5256
 {
     /* Public OpMode members. */
-    public DcMotor leftMotor   = null;
-    public DcMotor rightMotor  = null;
-    public DcMotor rightShoot  = null;
-    public DcMotor leftShoot   = null;
-    public ColorSensor beacon  = null;
+    public DcMotor leftMotor      = null;
+    public DcMotor rightMotor     = null;
+    public DcMotor rightShoot     = null;
+    public DcMotor leftShoot      = null;
+    public ColorSensor beacon     = null;
+    public Servo armistice        = null;
+    public Servo kicker           = null;
+    public DigitalChannel blueAlliance = null;
+    public DigitalChannel secondTile = null;
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
