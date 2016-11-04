@@ -159,12 +159,12 @@ public class AutoGyroDrive extends LinearOpMode {
             }
             gyroTurn(TURN_SPEED, heading);
             gyroDrive(DRIVE_SPEED / 2.0, 64, heading, Color.BLUE);
-            if (robot.beacon.blue() > 0.0) {
+            if ((robot.beacon != null) && robot.beacon.blue() > 0.0) {
                 robot.armistice.setPosition(0.3);
                 sleep(5000);
             }
             gyroDrive(DRIVE_SPEED / 2.0, 48, heading, Color.BLUE);
-            if (robot.beacon.blue() > 0.0) {
+            if ((robot.beacon != null) && robot.beacon.blue() > 0.0) {
                 sleep(5000);
             }
             heading = heading - 45.0;
@@ -262,11 +262,11 @@ public class AutoGyroDrive extends LinearOpMode {
                 robot.leftMotor.setPower(leftSpeed);
                 robot.rightMotor.setPower(rightSpeed);
 
-                if ((color == Color.RED) && (robot.beacon.red() > 0)) {
+                if ((color == Color.RED) && (robot.beacon != null) && (robot.beacon.red() > 0)) {
                     break;
                 }
 
-                if ((color == Color.BLUE) && (robot.beacon.blue() > 0)) {
+                if ((color == Color.BLUE) && (robot.beacon != null) && (robot.beacon.blue() > 0)) {
                     break;
                 }
 

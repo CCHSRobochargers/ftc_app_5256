@@ -72,6 +72,7 @@ public class TeleOp5256 extends LinearOpMode {
         boolean bblock = false;
         double rightDrive;
         double leftDrive;
+        double fSweeper;
         double rightShootValue = 0.0;
         double leftShootValue = 0.0;
 
@@ -79,6 +80,7 @@ public class TeleOp5256 extends LinearOpMode {
         robot.rightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         robot.rightShoot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         robot.leftShoot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.sweeper.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         /* eg: Initialize the hardware variables. Note that the strings used here as parameters
          * to 'get' must correspond to the names assigned during the robot configuration
@@ -105,6 +107,7 @@ public class TeleOp5256 extends LinearOpMode {
 
             rightDrive = -gamepad1.right_stick_y;
             leftDrive = -gamepad1.left_stick_y;
+            fSweeper = 1;
 
             robot.rightMotor.setPower(rightDrive);
             robot.leftMotor.setPower(leftDrive);
@@ -135,6 +138,10 @@ public class TeleOp5256 extends LinearOpMode {
 
             if (!gamepad1.b){
                 bblock = false;
+            }
+
+            if(gamepad1.x) {
+                robot.sweeper.setPower(fSweeper);
             }
 
             // eg: Run wheels in tank mode (note: The joystick goes negative when pushed forwards)

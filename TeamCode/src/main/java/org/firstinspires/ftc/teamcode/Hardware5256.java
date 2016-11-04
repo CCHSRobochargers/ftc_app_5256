@@ -25,6 +25,7 @@ public class Hardware5256
     public DcMotor rightMotor     = null;
     public DcMotor rightShoot     = null;
     public DcMotor leftShoot      = null;
+    public DcMotor sweeper        = null;
     public ColorSensor beacon     = null;
     public Servo armistice        = null;
     public Servo kicker           = null;
@@ -50,22 +51,25 @@ public class Hardware5256
         rightMotor  = hwMap.dcMotor.get("motorR");
         rightShoot = hwMap.dcMotor.get("rShoot");
         leftShoot = hwMap.dcMotor.get("lShoot");
-//        beacon = hwMap.colorSensor.get("beacon");
+        sweeper = hwMap.dcMotor.get("sweep");
+        beacon = hwMap.colorSensor.get("beacon");
         leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
         rightShoot.setDirection(DcMotor.Direction.FORWARD);
         leftShoot.setDirection(DcMotor.Direction.REVERSE);
+        sweeper.setDirection(DcMotor.Direction.REVERSE);
 
         // Set all motors to zero power
         leftMotor.setPower(0);
         rightMotor.setPower(0);
+        sweeper.setPower(0);
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
         leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-//        beacon.enableLed(false);
+        beacon.enableLed(false);
     }
 
     /***
