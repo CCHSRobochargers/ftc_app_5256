@@ -32,13 +32,10 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-
-import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 
 /**
  * This file illustrates the concept of driving a path based on Gyro heading and encoder counts.
@@ -91,7 +88,7 @@ public class AutoGyroDrive extends LinearOpMode {
 
     // These constants define the desired driving/control characteristics
     // The can/should be tweaked to suite the specific robot drive train.
-    static final double     DRIVE_SPEED             = 0.7;     // Nominal speed for better accuracy.
+    static final double     DRIVE_SPEED             = 0.8;     // Nominal speed for better accuracy.
     static final double     TURN_SPEED              = 0.5;     // Nominal half speed for better accuracy.
 
     static final double     HEADING_THRESHOLD       = 1 ;      // As tight as we can make it with an integer gyro
@@ -109,6 +106,7 @@ public class AutoGyroDrive extends LinearOpMode {
         robot.init(hardwareMap);
         gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
         double heading = 0.0;
+        double drivespeed = 0.0;
 
         // Ensure the robot it stationary, then reset the encoders and calibrate the gyro.
         robot.leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -143,25 +141,45 @@ public class AutoGyroDrive extends LinearOpMode {
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
         // Put a hold after each turn
-        gyroDrive(DRIVE_SPEED, 12.0, heading);
-        heading = heading - 65;
-        gyroTurn(TURN_SPEED, heading);
-        gyroDrive(DRIVE_SPEED, 74.0, heading);
-        heading = heading + 65.0;
-        gyroTurn(TURN_SPEED, heading);
-        gyroDrive(DRIVE_SPEED / 2.0, 64, heading, Color.BLUE);
-//        if (robot.beacon.blue() > 0.0)
-//            return;
-        heading = heading - 45.0;
-        gyroTurn(TURN_SPEED, heading);
-        gyroDrive(DRIVE_SPEED, -64.0, heading);
+        if (robot.blueAlliance.getState()) {
+            // blue alliance moves
+            robot.armistice.setPosition(1.0);
+            if (robot.secondTile.getState()) {
+                gyroDrive(DRIVE_SPEED, 12.0, heading);
+                heading = heading - 65;
+                gyroTurn(TURN_SPEED, heading);
+                gyroDrive(DRIVE_SPEED, 74.0, heading);
+                heading = heading + 65.0;
+            } else {
+                gyroDrive(DRIVE_SPEED, 24.0, heading);
+                heading = heading - 45;
+                gyroTurn(TURN_SPEED, heading);
+                gyroDrive(DRIVE_SPEED, 74.0, heading);
+                heading = heading + 65.0;
+            }
+            gyroTurn(TURN_SPEED, heading);
+            gyroDrive(DRIVE_SPEED / 2.0, 64, heading, Color.BLUE);
+            if (robot.beacon.blue() > 0.0) {
+                robot.armistice.setPosition(0.3);
+                sleep(5000);
+            }
+            gyroDrive(DRIVE_SPEED / 2.0, 48, heading, Color.BLUE);
+            if (robot.beacon.blue() > 0.0) {
+                sleep(5000);
+            }
+            heading = heading - 45.0;
+            robot.armistice.setPosition(1);
+            gyroTurn(TURN_SPEED, heading);
+            gyroDrive(DRIVE_SPEED, -70.0, heading);
 //        heading = heading - 90;
 //        gyroTurn(TURN_SPEED, heading);
 //        gyroDrive(DRIVE_SPEED, 12.0, heading);
 //        heading = heading + 90;
 //        gyroTurn(TURN_SPEED, heading);
 //        gyroDrive(DRIVE_SPEED, 6.0, heading);
-
+        } else {
+            // Red alliance moves
+        }
         telemetry.addData("Path", "Complete");
         telemetry.update();
 
@@ -244,13 +262,13 @@ public class AutoGyroDrive extends LinearOpMode {
                 robot.leftMotor.setPower(leftSpeed);
                 robot.rightMotor.setPower(rightSpeed);
 
-//                if ((color == Color.RED) && (robot.beacon.red() > 0)) {
-//                    break;
-//                }
-//
-//                if ((color == Color.BLUE) && (robot.beacon.blue() > 0)) {
-//                    break;
-//                }
+                if ((color == Color.RED) && (robot.beacon.red() > 0)) {
+                    break;
+                }
+
+                if ((color == Color.BLUE) && (robot.beacon.blue() > 0)) {
+                    break;
+                }
 
                 // Display drive status for the driver.
                 telemetry.addData("Err/St",  "%5.1f/%5.1f",  error, steer);
