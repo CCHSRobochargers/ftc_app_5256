@@ -70,6 +70,7 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
+
 @Autonomous(name="Auto Gyro Drive", group="5256")
 //@Disabled
 public class AutoGyroDrive extends LinearOpMode {
@@ -138,47 +139,124 @@ public class AutoGyroDrive extends LinearOpMode {
         }
         gyro.resetZAxisIntegrator();
         
-        // Step through each leg of the path,
-        // Note: Reverse movement is obtained by setting a negative distance (not speed)
-        // Put a hold after each turn
+
+
+
         if (robot.blueAlliance.getState()) {
             // blue alliance moves
             robot.armistice.setPosition(1.0);
             if (robot.secondTile.getState()) {
+                // this is what happens When "Second Tile." is on on the blue side.
+                // Drive 12 inches
                 gyroDrive(DRIVE_SPEED, 12.0, heading);
+                //change heading by -65
                 heading = heading - 65;
                 gyroTurn(TURN_SPEED, heading);
+                //turn
                 gyroDrive(DRIVE_SPEED, 74.0, heading);
+                //change heading by +65
                 heading = heading + 65.0;
             } else {
+                // this is what happens When "Second Tile." is off on the blue side.
+                //drive foward 24 inches
                 gyroDrive(DRIVE_SPEED, 24.0, heading);
+                //change heading by -45
                 heading = heading - 45;
+                //Turn on heading
                 gyroTurn(TURN_SPEED, heading);
+                //drive foward 74 inches
                 gyroDrive(DRIVE_SPEED, 74.0, heading);
+                //change heading by +65 degrees
                 heading = heading + 65.0;
             }
+            // From here on is all what happens the same on the blue side
+            //turn on heading
             gyroTurn(TURN_SPEED, heading);
+            //drive 64 inches looking for blue
             gyroDrive(DRIVE_SPEED / 2.0, 64, heading, Color.BLUE);
-            if ((robot.beacon != null) && robot.beacon.blue() > 0.0) {
+            //if the beacon reads then move the arm out then sleep for 5 seconds
+            if (robot.beacon.blue() > 0.0) {
                 robot.armistice.setPosition(0.3);
                 sleep(5000);
             }
+            //drive for 48 inches looking for color blue then sleep for 5 sec
             gyroDrive(DRIVE_SPEED / 2.0, 48, heading, Color.BLUE);
-            if ((robot.beacon != null) && robot.beacon.blue() > 0.0) {
+            if (robot.beacon.blue() > 0.0) {
                 sleep(5000);
             }
+            //change heading by -45
             heading = heading - 45.0;
+            //set arm position
             robot.armistice.setPosition(1);
+            //turn
             gyroTurn(TURN_SPEED, heading);
+            //drive for -70 inches
             gyroDrive(DRIVE_SPEED, -70.0, heading);
-//        heading = heading - 90;
-//        gyroTurn(TURN_SPEED, heading);
-//        gyroDrive(DRIVE_SPEED, 12.0, heading);
-//        heading = heading + 90;
-//        gyroTurn(TURN_SPEED, heading);
-//        gyroDrive(DRIVE_SPEED, 6.0, heading);
+
         } else {
             // Red alliance moves
+            if (robot.secondTile.getState()) {
+                // this is what happens When "Second Tile." is on on the red side.
+                //drive +48 inches
+                gyroDrive(DRIVE_SPEED, 48.0, heading);
+                // change heading by +45
+                heading = heading + 45;
+                //turn
+                gyroTurn(TURN_SPEED, heading);
+                //drive +96 inches
+                gyroDrive(DRIVE_SPEED, 96.0, heading);
+                //change heading by +75
+                heading = heading + 75.0;
+                //turn on heading
+                gyroTurn(TURN_SPEED, heading);
+                //drive +24 inches
+                gyroDrive(DRIVE_SPEED, 24, heading);
+            } else {
+                // this is what happens When "Second Tile." is off on the red side.
+                //Drive +48 inches
+                gyroDrive(DRIVE_SPEED, 48.0, heading);
+                //chang heading by +45 degrees
+                heading = heading + 45;
+                //turn
+                gyroTurn(TURN_SPEED, heading);
+                //drive +66 on the heading
+                gyroDrive(DRIVE_SPEED, 66.0, heading);
+                //change heading by +75 dgrees
+                heading = heading + 75.0;
+                //turn
+                gyroTurn(TURN_SPEED, heading);
+                //drive +24inches on heading
+                gyroDrive(DRIVE_SPEED, 24, heading);
+            }
+            // From here on is all what happens the same on the red side
+            //Turn
+            gyroTurn(TURN_SPEED, heading);
+            //drive 64 inches looking for blue
+            gyroDrive(DRIVE_SPEED / 2.0, 64, heading, Color.RED);
+            //if the beacon reads then move the arm out then sleep for 5 seconds
+            if (robot.beacon.red() > 0.0) {
+                robot.armistice.setPosition(0.3);
+                sleep(5000);
+            }
+            //drive for 48 inches looking for color blue then sleep for 5 sec
+            gyroDrive(DRIVE_SPEED / 2.0, 48, heading, Color.RED);
+            if (robot.beacon.red() > 0.0) {
+                sleep(5000);
+            }
+            //change heading +90 degrees
+            heading = heading + 90.0;
+            //set arm position
+            robot.armistice.setPosition(1);
+            //turn
+            gyroTurn(TURN_SPEED, heading);
+            //drive forward +50 inches
+            gyroDrive(DRIVE_SPEED, 50.0, heading);
+            //change heaading by +90
+            heading = heading + 90.0;
+            //turn
+            gyroTurn(TURN_SPEED, heading);
+            //drive +36 inches
+            gyroDrive(DRIVE_SPEED, 36.0, heading);
         }
         telemetry.addData("Path", "Complete");
         telemetry.update();
@@ -262,11 +340,11 @@ public class AutoGyroDrive extends LinearOpMode {
                 robot.leftMotor.setPower(leftSpeed);
                 robot.rightMotor.setPower(rightSpeed);
 
-                if ((color == Color.RED) && (robot.beacon != null) && (robot.beacon.red() > 0)) {
+                if ((color == Color.RED) && (robot.beacon.red() > 0)) {
                     break;
                 }
 
-                if ((color == Color.BLUE) && (robot.beacon != null) && (robot.beacon.blue() > 0)) {
+                if ((color == Color.BLUE) && (robot.beacon.blue() > 0)) {
                     break;
                 }
 
