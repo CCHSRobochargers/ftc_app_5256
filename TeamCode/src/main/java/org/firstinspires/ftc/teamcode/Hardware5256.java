@@ -52,7 +52,10 @@ public class Hardware5256
         rightShoot = hwMap.dcMotor.get("rShoot");
         leftShoot = hwMap.dcMotor.get("lShoot");
         sweeper = hwMap.dcMotor.get("sweep");
+        kicker = hwMap.servo.get("kick");
         beacon = hwMap.colorSensor.get("beacon");
+        blueAlliance = hwMap.digitalChannel.get("alliance");
+        secondTile = hwMap.digitalChannel.get("tile");
         leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
         rightShoot.setDirection(DcMotor.Direction.FORWARD);
