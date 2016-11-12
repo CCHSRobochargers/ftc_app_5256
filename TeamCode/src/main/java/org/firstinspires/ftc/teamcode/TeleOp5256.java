@@ -70,6 +70,9 @@ public class TeleOp5256 extends LinearOpMode {
 
         boolean ablock = false;
         boolean bblock = false;
+        boolean yblock = false;
+        boolean xblock = false;
+        double servovalue = 0.3;
         double rightDrive;
         double leftDrive;
         double fSweeper;
@@ -104,6 +107,7 @@ public class TeleOp5256 extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Left", leftShootValue);
             telemetry.addData("Right", rightShootValue);
+            telemetry.addData("kick", servovalue);
             telemetry.update();
 
             rightDrive = -gamepad1.right_stick_y;
@@ -145,10 +149,30 @@ public class TeleOp5256 extends LinearOpMode {
                 robot.sweeper.setPower(fSweeper);
             }
 
-            if(gamepad2. x) {
-                robot.kicker.setPosition(1);
+            ///////////////////////////////////////////////////
+            if(gamepad1.x && xblock == false){
+                if(servovalue < 1.0) {
+                    servovalue += 0.1;
+                }
+                robot.kicker.setPosition(servovalue);
+                xblock = true;
             }
 
+            if (!gamepad1.x){
+                xblock = false;
+            }
+
+            if(gamepad1.y && yblock == false){
+                if(servovalue > -1.0) {
+                    servovalue -= 0.1;
+                }
+                robot.kicker.setPosition(servovalue);
+                yblock = true;
+            }
+
+            if (!gamepad1.y){
+                yblock = false;
+            }
             // eg: Run wheels in tank mode (note: The joystick goes negative when pushed forwards)
             // leftMotor.setPower(-gamepad1.left_stick_y);
             // rightMotor.setPower(-gamepad1.right_stick_y);
