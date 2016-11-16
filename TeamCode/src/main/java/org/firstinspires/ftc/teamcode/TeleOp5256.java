@@ -43,18 +43,18 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
  * of the FTC Driver Station. When an selection is made from the menu, the corresponding OpMode
  * class is instantiated on the Robot Controller and executed.
- *
+ * <p>
  * This particular OpMode just executes a basic Tank Drive Teleop for a PushBot
  * It includes all the skeletal structure that all linear OpModes contain.
- *
+ * <p>
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Teleop", group="5256")  // @Autonomous(...) is the other common choice
+@TeleOp(name = "Teleop", group = "5256")  // @Autonomous(...) is the other common choice
 public class TeleOp5256 extends LinearOpMode {
 
-    Hardware5256         robot   = new Hardware5256();
+    Hardware5256 robot = new Hardware5256();
 
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
@@ -70,12 +70,17 @@ public class TeleOp5256 extends LinearOpMode {
 
         boolean ablock = false;
         boolean bblock = false;
+        boolean dpadblockdown = false;
         boolean yblock = false;
         boolean xblock = false;
+        boolean dpadblockup = false;
+        boolean sweeper = false;
+        boolean dpad = false;
+
         double servovalue = 0.3;
         double rightDrive;
         double leftDrive;
-        double fSweeper;
+        double fSweeper = 0.0;
         double rightShootValue = 0.0;
         double leftShootValue = 0.0;
 
@@ -116,68 +121,72 @@ public class TeleOp5256 extends LinearOpMode {
 
             robot.rightMotor.setPower(rightDrive);
             robot.leftMotor.setPower(leftDrive);
+            //drive
 
-            if(gamepad2.a && ablock == false){
-                if(rightShootValue < 1.0) {
-                    rightShootValue += 0.01;
-                    leftShootValue += 0.01;
+            if (gamepad2.dpad_up && dpadblockup == false) {
+                if (rightShootValue <= 0.5) {
+                    rightShootValue += 0.02;
+                    leftShootValue += 0.02;
                 }
                 robot.rightShoot.setPower(rightShootValue);
                 robot.leftShoot.setPower(leftShootValue);
-                ablock = true;
+                dpadblockup = true;
             }
 
-            if (!gamepad2.a){
-                ablock = false;
+            if (!gamepad2.dpad_up) {
+                dpadblockup = false;
             }
 
-            if(gamepad2.b && bblock == false){
-                if(rightShootValue > -1.0) {
-                    rightShootValue -= 0.01;
-                    leftShootValue -= 0.01;
+            if (gamepad2.dpad_down && dpadblockdown == false) {
+                if (rightShootValue > 0.0) {
+                    rightShootValue -= 0.02;
+                    leftShootValue -= 0.02;
                 }
                 robot.rightShoot.setPower(rightShootValue);
                 robot.leftShoot.setPower(leftShootValue);
-                bblock = true;
+                dpadblockdown = true;
             }
 
-            if (!gamepad2.b){
-                bblock = false;
+            if (!gamepad2.dpad_down) {
+                dpadblockup = false;
             }
 
-            if(gamepad1.a) {
-                robot.sweeper.setPower(fSweeper);
-            }
 
-            ///////////////////////////////////////////////////
-            if(gamepad1.x && xblock == false){
-                if(servovalue < 1.0) {
-                    servovalue += 0.1;
+            if (gamepad2.a) {
+                if (servovalue < 1.0) {
+                    servovalue += 1.9;
                 }
                 robot.kicker.setPosition(servovalue);
-                xblock = true;
             }
-
-            if (!gamepad1.x){
-                xblock = false;
-            }
-
-            if(gamepad1.y && yblock == false){
-                if(servovalue > -1.0) {
-                    servovalue -= 0.1;
+            if (gamepad2.b) {
+                if (servovalue < 1.0) {
+                    servovalue += 1.9;
                 }
                 robot.kicker.setPosition(servovalue);
-                yblock = true;
             }
 
-            if (!gamepad1.y){
-                yblock = false;
+            if (gamepad2.left_bumper) {
+                robot.arm.setPosition(0.3);
+            }
+
+            if (gamepad2.right_bumper) {
+                robot.arm.setPosition(0.0);
+            }
+
+            if (gamepad2.right_stick_x < 0.5) {
+                robot.sweeper.setPower(1.0);
+            }
+
+            if (gamepad2.right_stick_x > .5) {
+                robot.sweeper.setPower(-1.0);
             }
             // eg: Run wheels in tank mode (note: The joystick goes negative when pushed forwards)
             // leftMotor.setPower(-gamepad1.left_stick_y);
             // rightMotor.setPower(-gamepad1.right_stick_y);
 
-            idle(); // Always call idle() at the bottom of your while(opModeIsActive()) loop
+            idle();
+            { // Always call idle() at the bottom of your while(opModeIsActive()) loop
+            }
         }
     }
 }

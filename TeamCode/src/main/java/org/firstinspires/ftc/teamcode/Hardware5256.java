@@ -21,16 +21,18 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class Hardware5256
 {
     /* Public OpMode members. */
-    public DcMotor leftMotor      = null;
-    public DcMotor rightMotor     = null;
-    public DcMotor rightShoot     = null;
-    public DcMotor leftShoot      = null;
-    public DcMotor sweeper        = null;
-    public ColorSensor beacon     = null;
-    public Servo armistice        = null;
-    public Servo kicker           = null;
-    public DigitalChannel blueAlliance = null;
-    public DigitalChannel secondTile = null;
+    public DcMotor leftMotor             = null;
+    public DcMotor rightMotor            = null;
+    public DcMotor rightShoot            = null;
+    public DcMotor leftShoot             = null;
+    public DcMotor sweeper               = null;
+    public ColorSensor beacon            = null;
+    public Servo arm                     = null;
+    public Servo kicker                  = null;
+    public DigitalChannel blueAlliance   = null;
+    public DigitalChannel secondTile     = null;
+    public DcMotor Cascade1              = null;
+    public DcMotor Cascade2              = null;
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;

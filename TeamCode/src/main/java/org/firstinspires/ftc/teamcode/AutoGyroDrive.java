@@ -144,7 +144,7 @@ public class AutoGyroDrive extends LinearOpMode {
 
         if (robot.blueAlliance.getState()) {
             // blue alliance moves
-            robot.armistice.setPosition(1.0);
+            robot.arm.setPosition(1.0);
             if (robot.secondTile.getState()) {
                 // this is what happens When "Second Tile." is on on the blue side.
                 // Drive 12 inches
@@ -176,7 +176,7 @@ public class AutoGyroDrive extends LinearOpMode {
             gyroDrive(DRIVE_SPEED / 2.0, 64, heading, Color.BLUE);
             //if the beacon reads then move the arm out then sleep for 5 seconds
             if (robot.beacon.blue() > 0.0) {
-                robot.armistice.setPosition(0.3);
+                robot.arm.setPosition(0.3);
                 sleep(5000);
             }
             //drive for 48 inches looking for color blue then sleep for 5 sec
@@ -187,7 +187,7 @@ public class AutoGyroDrive extends LinearOpMode {
             //change heading by -45
             heading = heading - 45.0;
             //set arm position
-            robot.armistice.setPosition(1);
+            robot.arm.setPosition(1);
             //turn
             gyroTurn(TURN_SPEED, heading);
             //drive for -70 inches
@@ -235,7 +235,7 @@ public class AutoGyroDrive extends LinearOpMode {
             gyroDrive(DRIVE_SPEED / 2.0, 64, heading, Color.RED);
             //if the beacon reads then move the arm out then sleep for 5 seconds
             if (robot.beacon.red() > 0.0) {
-                robot.armistice.setPosition(0.3);
+                robot.arm.setPosition(0.3);
                 sleep(5000);
             }
             //drive for 48 inches looking for color blue then sleep for 5 sec
@@ -246,7 +246,7 @@ public class AutoGyroDrive extends LinearOpMode {
             //change heading +90 degrees
             heading = heading + 90.0;
             //set arm position
-            robot.armistice.setPosition(1);
+            robot.arm.setPosition(1);
             //turn
             gyroTurn(TURN_SPEED, heading);
             //drive forward +50 inches
