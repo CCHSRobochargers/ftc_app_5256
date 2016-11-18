@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 /**
  * This is NOT an opmode.
  *
@@ -44,30 +46,83 @@ public class Hardware5256
     }
 
     /* Initialize standard Hardware interfaces */
-    public void init(HardwareMap ahwMap) {
+    public void init(HardwareMap ahwMap, Telemetry telemetry) {
         // Save reference to Hardware map
         hwMap = ahwMap;
 
         // Define and Initialize Motors
-        leftMotor   = hwMap.dcMotor.get("motorL");
+        try {
+            rightShoot   = hwMap.dcMotor.get("rShoot");
+        } catch (IllegalArgumentException e) {
+            telemetry.addLine("rShoot not found");
+        }
+
+        try {
+            leftShoot   = hwMap.dcMotor.get("lShoot");
+        } catch (IllegalArgumentException e ){
+            telemetry.addLine("lShoot not found");
+        }
+
+        try {
+            sweeper = hwMap.dcMotor.get("sweep");
+        } catch (IllegalArgumentException e) {
+            telemetry.addLine("sweep not found");
+        }
+
+        try {
+            kicker = hwMap.servo.get("kick");
+        } catch (IllegalArgumentException e) {
+            telemetry.addLine("kick not found");
+        }
+
+        try {
+            arm = hwMap.servo.get("pusher");
+        } catch (IllegalArgumentException e) {
+            telemetry.addLine("pusher not found");
+        }
+
+        try {
+            beacon = hwMap.colorSensor.get("beacon");
+        } catch (IllegalArgumentException e) {
+            telemetry.addLine("beacon sensor not found");
+        }
+
+        try {
+            blueAlliance = hwMap.digitalChannel.get("alliance");
+        } catch (IllegalArgumentException e) {
+            telemetry.addLine("alliance switch not found");
+        }
+
+        try {
+            secondTile = hwMap.digitalChannel.get("tile");
+        } catch (IllegalArgumentException e) {
+            telemetry.addLine("tile Switch not found");
+        }
+
+
+
         rightMotor  = hwMap.dcMotor.get("motorR");
-        rightShoot = hwMap.dcMotor.get("rShoot");
-        leftShoot = hwMap.dcMotor.get("lShoot");
-        sweeper = hwMap.dcMotor.get("sweep");
-        kicker = hwMap.servo.get("kick");
-        beacon = hwMap.colorSensor.get("beacon");
-        blueAlliance = hwMap.digitalChannel.get("alliance");
-        secondTile = hwMap.digitalChannel.get("tile");
+        leftMotor = hwMap.dcMotor.get("motorL");
+
         leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
-        rightShoot.setDirection(DcMotor.Direction.FORWARD);
-        leftShoot.setDirection(DcMotor.Direction.REVERSE);
-        sweeper.setDirection(DcMotor.Direction.REVERSE);
+        if (rightShoot != null) {
+            rightShoot.setDirection(DcMotor.Direction.REVERSE);
+        }
+
+        if (leftShoot != null) {
+            leftShoot.setDirection(DcMotor.Direction.FORWARD);
+        }
+
+        if (sweeper != null) {
+            sweeper.setDirection(DcMotor.Direction.REVERSE);
+            sweeper.setPower(0);
+        }
+
 
         // Set all motors to zero power
         leftMotor.setPower(0);
         rightMotor.setPower(0);
-        sweeper.setPower(0);
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.

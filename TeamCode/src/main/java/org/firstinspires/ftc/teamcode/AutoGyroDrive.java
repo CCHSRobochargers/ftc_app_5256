@@ -37,6 +37,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 /**
  * This file illustrates the concept of driving a path based on Gyro heading and encoder counts.
  * It uses the common Pushbot hardware class to define the drive on the robot.
@@ -104,7 +106,7 @@ public class AutoGyroDrive extends LinearOpMode {
          * Initialize the standard drive system variables.
          * The init() method of the hardware class does most of the work here
          */
-        robot.init(hardwareMap);
+        robot.init(hardwareMap, telemetry);
         gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
         double heading = 0.0;
         double drivespeed = 0.0;

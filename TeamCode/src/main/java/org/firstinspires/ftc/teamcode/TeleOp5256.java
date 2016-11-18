@@ -66,7 +66,7 @@ public class TeleOp5256 extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        robot.init(hardwareMap);
+        robot.init(hardwareMap, telemetry);
 
         boolean ablock = false;
         boolean bblock = false;
@@ -148,21 +148,30 @@ public class TeleOp5256 extends LinearOpMode {
             }
 
             if (!gamepad2.dpad_down) {
-                dpadblockup = false;
+                dpadblockdown = false;
             }
 
 
-            if (gamepad2.a) {
+            if (gamepad2.a && ablock == false) {
                 if (servovalue < 1.0) {
-                    servovalue += 1.9;
+                    servovalue += 0.1;
                 }
                 robot.kicker.setPosition(servovalue);
+                ablock = true;
             }
-            if (gamepad2.b) {
-                if (servovalue < 1.0) {
-                    servovalue += 1.9;
+            if (!gamepad2.a) {
+                ablock = false;
+            }
+
+            if (gamepad2.b && bblock == false) {
+                if (servovalue > 0.0) {
+                    servovalue -= 0.1;
                 }
                 robot.kicker.setPosition(servovalue);
+                bblock = true;
+            }
+            if (!gamepad2.b) {
+                bblock = false;
             }
 
             if (gamepad2.left_bumper) {
@@ -173,12 +182,16 @@ public class TeleOp5256 extends LinearOpMode {
                 robot.arm.setPosition(0.0);
             }
 
-            if (gamepad2.right_stick_x < 0.5) {
+            if (gamepad1.a) {
                 robot.sweeper.setPower(1.0);
             }
 
-            if (gamepad2.right_stick_x > .5) {
+            if (gamepad1.b) {
                 robot.sweeper.setPower(-1.0);
+            }
+
+            if (gamepad1.x){
+                robot.sweeper.setPower(0.0);
             }
             // eg: Run wheels in tank mode (note: The joystick goes negative when pushed forwards)
             // leftMotor.setPower(-gamepad1.left_stick_y);
