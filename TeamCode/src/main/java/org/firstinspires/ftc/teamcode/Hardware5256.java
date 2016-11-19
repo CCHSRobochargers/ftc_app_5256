@@ -63,11 +63,11 @@ public class Hardware5256
             telemetry.addLine("lShoot not found");
         }
 
-        try {
-            sweeper = hwMap.dcMotor.get("sweep");
-        } catch (IllegalArgumentException e) {
-            telemetry.addLine("sweep not found");
-        }
+       // try {
+            sweeper = hwMap.dcMotor.get("sweeper");
+        //} catch (IllegalArgumentException e) {
+           // telemetry.addLine("sweep not found");
+       //}
 
         try {
             kicker = hwMap.servo.get("kick");

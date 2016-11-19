@@ -74,13 +74,11 @@ public class TeleOp5256 extends LinearOpMode {
         boolean yblock = false;
         boolean xblock = false;
         boolean dpadblockup = false;
-        boolean sweeper = false;
         boolean dpad = false;
 
-        double servovalue = 0.3;
+        double servovalue = 0.55;
         double rightDrive;
         double leftDrive;
-        double fSweeper = 0.0;
         double rightShootValue = 0.0;
         double leftShootValue = 0.0;
 
@@ -117,7 +115,6 @@ public class TeleOp5256 extends LinearOpMode {
 
             rightDrive = -gamepad1.right_stick_y;
             leftDrive = -gamepad1.left_stick_y;
-            fSweeper = 1;
 
             robot.rightMotor.setPower(rightDrive);
             robot.leftMotor.setPower(leftDrive);
