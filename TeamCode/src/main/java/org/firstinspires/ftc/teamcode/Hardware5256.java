@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -32,7 +31,7 @@ public class Hardware5256
     public Servo arm                     = null;
     public Servo kicker                  = null;
     public DigitalChannel blueAlliance   = null;
-    public DigitalChannel secondTile     = null;
+    public DigitalChannel thirdTile = null;
     public DcMotor Cascade1              = null;
     public DcMotor Cascade2              = null;
 
@@ -94,7 +93,7 @@ public class Hardware5256
         }
 
         try {
-            secondTile = hwMap.digitalChannel.get("tile");
+            thirdTile = hwMap.digitalChannel.get("tile");
         } catch (IllegalArgumentException e) {
             telemetry.addLine("tile Switch not found");
         }

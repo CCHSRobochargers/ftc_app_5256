@@ -1,6 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
 <Robot type="FirstInspires-FTC">
     <MotorController name="Motor Controller 1" serialNumber="AL00XTMT">
+        <Motor name="sweeper" port="1" />
     </MotorController>
     <DeviceInterfaceModule name="Device Interface Module 2" serialNumber="AL00VF0A">
         <Gyro name="gyro" port="0" />
@@ -11,7 +12,7 @@
     <ServoController name="Servo Controller 3" serialNumber="AL00VUL0">
         <Servo name="kick" port="6" />
     </ServoController>
-    <MotorController name="Drive motor" serialNumber="AL00VSFZ">
+    <MotorController name="Drive motor" serialNumber="AL00VXQH">
         <Motor name="motorL" port="1" />
         <Motor name="motorR" port="2" />
     </MotorController>

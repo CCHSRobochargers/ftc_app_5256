@@ -37,8 +37,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-
 /**
  * This file illustrates the concept of driving a path based on Gyro heading and encoder counts.
  * It uses the common Pushbot hardware class to define the drive on the robot.
@@ -140,125 +138,32 @@ public class AutoGyroDrive extends LinearOpMode {
             idle();
         }
         gyro.resetZAxisIntegrator();
-        
-
-
 
         if (robot.blueAlliance.getState()) {
             // blue alliance moves
-            robot.arm.setPosition(1.0);
-            if (robot.secondTile.getState()) {
-                // this is what happens When "Second Tile." is on on the blue side.
-                // Drive 12 inches
-                gyroDrive(DRIVE_SPEED, 12.0, heading);
-                //change heading by -65
-                heading = heading - 65;
-                gyroTurn(TURN_SPEED, heading);
-                //turn
-                gyroDrive(DRIVE_SPEED, 74.0, heading);
-                //change heading by +65
-                heading = heading + 65.0;
+            if (robot.thirdTile.getState()) {
+                // When "Third Tile." from the ramp corner.
+                gyroDrive(DRIVE_SPEED, 43.0, heading);
             } else {
-                // this is what happens When "Second Tile." is off on the blue side.
-                //drive foward 24 inches
-                gyroDrive(DRIVE_SPEED, 24.0, heading);
-                //change heading by -45
-                heading = heading - 45;
-                //Turn on heading
+                // When "Fourth Tile." from the ramp corner.
+                gyroDrive(DRIVE_SPEED, 25.0, heading);
+                heading = heading - 45.0;
                 gyroTurn(TURN_SPEED, heading);
-                //drive foward 74 inches
-                gyroDrive(DRIVE_SPEED, 74.0, heading);
-                //change heading by +65 degrees
-                heading = heading + 65.0;
+                gyroDrive(DRIVE_SPEED, 30.0, heading);
             }
-            // From here on is all what happens the same on the blue side
-            //turn on heading
-            gyroTurn(TURN_SPEED, heading);
-            //drive 64 inches looking for blue
-            gyroDrive(DRIVE_SPEED / 2.0, 64, heading, Color.BLUE);
-            //if the beacon reads then move the arm out then sleep for 5 seconds
-            if (robot.beacon.blue() > 0.0) {
-                robot.arm.setPosition(0.3);
-                sleep(5000);
-            }
-            //drive for 48 inches looking for color blue then sleep for 5 sec
-            gyroDrive(DRIVE_SPEED / 2.0, 48, heading, Color.BLUE);
-            if (robot.beacon.blue() > 0.0) {
-                sleep(5000);
-            }
-            //change heading by -45
-            heading = heading - 45.0;
-            //set arm position
-            robot.arm.setPosition(1);
-            //turn
-            gyroTurn(TURN_SPEED, heading);
-            //drive for -70 inches
-            gyroDrive(DRIVE_SPEED, -70.0, heading);
-
         } else {
             // Red alliance moves
-            if (robot.secondTile.getState()) {
-                // this is what happens When "Second Tile." is on on the red side.
-                //drive +48 inches
-                gyroDrive(DRIVE_SPEED, 48.0, heading);
-                // change heading by +45
-                heading = heading + 45;
-                //turn
-                gyroTurn(TURN_SPEED, heading);
-                //drive +96 inches
-                gyroDrive(DRIVE_SPEED, 96.0, heading);
-                //change heading by +75
-                heading = heading + 75.0;
-                //turn on heading
-                gyroTurn(TURN_SPEED, heading);
-                //drive +24 inches
-                gyroDrive(DRIVE_SPEED, 24, heading);
+            if (robot.thirdTile.getState()) {
+                //  When "Third Tile." from the ramp corner.
+                gyroDrive(DRIVE_SPEED, 43, heading);
+
             } else {
-                // this is what happens When "Second Tile." is off on the red side.
-                //Drive +48 inches
-                gyroDrive(DRIVE_SPEED, 48.0, heading);
-                //chang heading by +45 degrees
-                heading = heading + 45;
-                //turn
+                // When "Fourth Tile." from the ramp corner.
+                gyroDrive(DRIVE_SPEED, 25.0, heading);
+                heading = heading + 45.0;
                 gyroTurn(TURN_SPEED, heading);
-                //drive +66 on the heading
-                gyroDrive(DRIVE_SPEED, 66.0, heading);
-                //change heading by +75 dgrees
-                heading = heading + 75.0;
-                //turn
-                gyroTurn(TURN_SPEED, heading);
-                //drive +24inches on heading
-                gyroDrive(DRIVE_SPEED, 24, heading);
+                gyroDrive(DRIVE_SPEED, 30.0, heading);
             }
-            // From here on is all what happens the same on the red side
-            //Turn
-            gyroTurn(TURN_SPEED, heading);
-            //drive 64 inches looking for blue
-            gyroDrive(DRIVE_SPEED / 2.0, 64, heading, Color.RED);
-            //if the beacon reads then move the arm out then sleep for 5 seconds
-            if (robot.beacon.red() > 0.0) {
-                robot.arm.setPosition(0.3);
-                sleep(5000);
-            }
-            //drive for 48 inches looking for color blue then sleep for 5 sec
-            gyroDrive(DRIVE_SPEED / 2.0, 48, heading, Color.RED);
-            if (robot.beacon.red() > 0.0) {
-                sleep(5000);
-            }
-            //change heading +90 degrees
-            heading = heading + 90.0;
-            //set arm position
-            robot.arm.setPosition(1);
-            //turn
-            gyroTurn(TURN_SPEED, heading);
-            //drive forward +50 inches
-            gyroDrive(DRIVE_SPEED, 50.0, heading);
-            //change heaading by +90
-            heading = heading + 90.0;
-            //turn
-            gyroTurn(TURN_SPEED, heading);
-            //drive +36 inches
-            gyroDrive(DRIVE_SPEED, 36.0, heading);
         }
         telemetry.addData("Path", "Complete");
         telemetry.update();

@@ -113,8 +113,8 @@ public class TeleOp5256 extends LinearOpMode {
             telemetry.addData("kick", servovalue);
             telemetry.update();
 
-            rightDrive = gamepad1.left_stick_y;
-            leftDrive = gamepad1.right_stick_x;
+            rightDrive = gamepad1.right_stick_y;
+            leftDrive = -gamepad1.left_stick_y;
 
             robot.rightMotor.setPower(rightDrive);
             robot.leftMotor.setPower(leftDrive);
