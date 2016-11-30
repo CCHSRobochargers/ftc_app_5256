@@ -119,6 +119,23 @@ public class AutoGyroDrive extends LinearOpMode {
 
         gyro.calibrate();
 
+        if (robot.blueAlliance.getState()) {
+            // blue alliance moves
+            if (robot.thirdTile.getState()) {
+                telemetry.addData(">", "Blue, Third Tile");
+            } else {
+                telemetry.addData(">", "Blue, Fourth Tile");
+                // When "Fourth Tile." from the ramp corner.
+            }
+        } else {
+            // Red alliance moves
+            if (robot.thirdTile.getState()) {
+                telemetry.addData(">", "Red, Third Tile");
+            } else {
+                telemetry.addData(">", "Red, Fourth Tile");
+            }
+        }
+        telemetry.update();
         // make sure the gyro is calibrated before continuing
         while (!isStopRequested() && gyro.isCalibrating())  {
             sleep(50);
@@ -139,12 +156,14 @@ public class AutoGyroDrive extends LinearOpMode {
         }
         gyro.resetZAxisIntegrator();
 
+        telemetry.addData(">", "Robot Heading Post-Reset = %d", gyro.getIntegratedZValue());
         if (robot.blueAlliance.getState()) {
             // blue alliance moves
             if (robot.thirdTile.getState()) {
                 // When "Third Tile." from the ramp corner.
                 gyroDrive(DRIVE_SPEED, 43.0, heading);
             } else {
+                telemetry.addData(">", "Blue, Fourth Tile");
                 // When "Fourth Tile." from the ramp corner.
                 gyroDrive(DRIVE_SPEED, 25.0, heading);
                 heading = heading - 45.0;
@@ -154,10 +173,12 @@ public class AutoGyroDrive extends LinearOpMode {
         } else {
             // Red alliance moves
             if (robot.thirdTile.getState()) {
+                telemetry.addData(">", "Red, Third Tile");
                 //  When "Third Tile." from the ramp corner.
                 gyroDrive(DRIVE_SPEED, 43, heading);
 
             } else {
+                telemetry.addData(">", "Red, Fourth Tile");
                 // When "Fourth Tile." from the ramp corner.
                 gyroDrive(DRIVE_SPEED, 25.0, heading);
                 heading = heading + 45.0;

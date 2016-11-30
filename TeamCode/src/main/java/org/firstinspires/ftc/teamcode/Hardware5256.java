@@ -104,7 +104,7 @@ public class Hardware5256
         leftMotor = hwMap.dcMotor.get("motorL");
 
         leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
-        rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
+        rightMotor.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
         if (rightShoot != null) {
             rightShoot.setDirection(DcMotor.Direction.REVERSE);
         }
