@@ -90,7 +90,7 @@ public class AutoGyroDrive extends LinearOpMode {
     // These constants define the desired driving/control characteristics
     // The can/should be tweaked to suite the specific robot drive train.
     static final double     DRIVE_SPEED             = 0.8;     // Nominal speed for better accuracy.
-    static final double     TURN_SPEED              = 0.5;     // Nominal half speed for better accuracy.
+    static final double     TURN_SPEED              = 0.1;     // Nominal half speed for better accuracy.
 
     static final double     HEADING_THRESHOLD       = 1 ;      // As tight as we can make it with an integer gyro
     static final double     P_TURN_COEFF            = 0.1;     // Larger is more responsive, but also less stable
@@ -161,11 +161,14 @@ public class AutoGyroDrive extends LinearOpMode {
             // blue alliance moves
             if (robot.thirdTile.getState()) {
                 // When "Third Tile." from the ramp corner.
-                gyroDrive(DRIVE_SPEED, 43.0, heading);
+                gyroDrive(DRIVE_SPEED, 47.0, heading);
+                heading = heading - 45.0;
+                gyroDrive(DRIVE_SPEED, 12.0, heading);
+
             } else {
                 telemetry.addData(">", "Blue, Fourth Tile");
                 // When "Fourth Tile." from the ramp corner.
-                gyroDrive(DRIVE_SPEED, 25.0, heading);
+                gyroDrive(DRIVE_SPEED, 56.0, heading);
                 heading = heading - 45.0;
                 gyroTurn(TURN_SPEED, heading);
                 gyroDrive(DRIVE_SPEED, 30.0, heading);
@@ -175,12 +178,15 @@ public class AutoGyroDrive extends LinearOpMode {
             if (robot.thirdTile.getState()) {
                 telemetry.addData(">", "Red, Third Tile");
                 //  When "Third Tile." from the ramp corner.
-                gyroDrive(DRIVE_SPEED, 43, heading);
+                gyroDrive(DRIVE_SPEED, 51, heading);
+                heading = heading + 45.0;
+                gyroDrive(DRIVE_SPEED, 12.0, heading);
 
             } else {
                 telemetry.addData(">", "Red, Fourth Tile");
                 // When "Fourth Tile." from the ramp corner.
-                gyroDrive(DRIVE_SPEED, 25.0, heading);
+                sleep(10000);
+                gyroDrive(DRIVE_SPEED, 56.0, heading);
                 heading = heading + 45.0;
                 gyroTurn(TURN_SPEED, heading);
                 gyroDrive(DRIVE_SPEED, 30.0, heading);

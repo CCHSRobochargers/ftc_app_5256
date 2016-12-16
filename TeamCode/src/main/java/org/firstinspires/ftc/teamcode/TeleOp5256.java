@@ -121,7 +121,7 @@ public class TeleOp5256 extends LinearOpMode {
             //drive
 
             if (gamepad2.dpad_up && dpadblockup == false) {
-                if (rightShootValue <= 0.5) {
+                if (rightShootValue <= 1) {
                     rightShootValue += 0.02;
                     leftShootValue += 0.02;
                 }
@@ -180,11 +180,11 @@ public class TeleOp5256 extends LinearOpMode {
             }
 
             if (gamepad1.a) {
-                robot.sweeper.setPower(1.0);
+                robot.sweeper.setPower(.45);
             }
 
             if (gamepad1.b) {
-                robot.sweeper.setPower(-1.0);
+                robot.sweeper.setPower(-0.45);
             }
 
             if (gamepad1.x){
