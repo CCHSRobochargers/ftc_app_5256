@@ -35,6 +35,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -71,13 +72,15 @@ public class K9botTeleopTank_Linear extends LinearOpMode {
     public DcMotor leftMotor;
     public DcMotor rightMotor;
     public DcMotor led;
-    public Servo turret;
+    public DcMotor led1;
+    public CRServo turret;
 
     public void runOpMode() {
         leftMotor   = hardwareMap.dcMotor.get("leftMotor");
         rightMotor  = hardwareMap.dcMotor.get("rightMotor");
         led         = hardwareMap.dcMotor.get("led");
-//        turret      = hardwareMap.servo.get("gunturret");
+        led1        = hardwareMap.dcMotor.get("led1");
+        turret      = hardwareMap.crservo.get("gunturret");
 
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
 
@@ -96,18 +99,26 @@ public class K9botTeleopTank_Linear extends LinearOpMode {
             leftMotor.setPower(gamepad1.left_stick_y);
             rightMotor.setPower(gamepad1.right_stick_y);
 
-//            if (gamepad1.left_stick_x > 0) {
-//                turret.setPosition(1);
-//            } else {
-//                turret.setPosition(0);
-//            }
+            if (gamepad1.right_trigger > 0.1) {
+                turret.setPower(gamepad1.right_trigger);
+                turret.setDirection(DcMotorSimple.Direction.FORWARD);
+
+            } else if (gamepad1.left_trigger > 0.1){
+                turret.setPower(gamepad1.left_trigger);
+                turret.setDirection(DcMotorSimple.Direction.REVERSE);
+            } else {
+                turret.setPower(0);
+            }
 
             if (gamepad1.a) {
                 led.setPower(1);
+                led1.setPower(0.5);
+
             }
 
             if (gamepad1.b) {
                 led.setPower(-1);
+                led1.setPower(0);
             }
 
         }
