@@ -36,6 +36,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -75,6 +76,7 @@ public class TeleOp5256 extends LinearOpMode {
         boolean xblock = false;
         boolean dpadblockup = false;
         boolean dpad = false;
+        boolean cascadeKillPower = true;
 
         double servovalue = 0.55;
         double rightDrive;
@@ -190,6 +192,39 @@ public class TeleOp5256 extends LinearOpMode {
             if (gamepad1.x){
                 robot.sweeper.setPower(0.0);
             }
+
+            if (gamepad2.right_trigger > 0.1) {
+                robot.cascade1.setDirection(DcMotorSimple.Direction.FORWARD);
+                robot.cascade1.setPower(gamepad2.right_trigger);
+                robot.cascade2.setDirection(DcMotorSimple.Direction.REVERSE);
+                robot.cascade2.setPower(gamepad2.right_trigger);
+                cascadeKillPower = false;
+            } else if (gamepad2.left_trigger > 0.1) {
+                robot.cascade1.setDirection(DcMotorSimple.Direction.REVERSE);
+                robot.cascade1.setPower(gamepad2.left_trigger);
+                robot.cascade2.setDirection(DcMotorSimple.Direction.FORWARD);
+                robot.cascade2.setPower(gamepad2.left_trigger);
+                cascadeKillPower = false;
+            } else if (cascadeKillPower == false) {
+                robot.cascade1.setDirection(DcMotorSimple.Direction.FORWARD);
+                robot.cascade1.setPower(0.05);
+                robot.cascade2.setDirection(DcMotorSimple.Direction.REVERSE);
+                robot.cascade2.setPower(0.05);
+            } else if (cascadeKillPower == true) {
+                robot.cascade1.setDirection(DcMotorSimple.Direction.FORWARD);
+                robot.cascade1.setPower(0.0);
+                robot.cascade2.setDirection(DcMotorSimple.Direction.REVERSE);
+                robot.cascade2.setPower(0.0);
+            }
+
+            if (gamepad2.right_bumper){
+                cascadeKillPower = true;
+            }
+
+
+
+
+
             // eg: Run wheels in tank mode (note: The joystick goes negative when pushed forwards)
             // leftMotor.setPower(-gamepad1.left_stick_y);
             // rightMotor.setPower(-gamepad1.right_stick_y);

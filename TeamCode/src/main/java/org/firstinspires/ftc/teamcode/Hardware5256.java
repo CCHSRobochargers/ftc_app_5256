@@ -33,8 +33,8 @@ public class Hardware5256
     public Servo kicker                  = null;
     public DigitalChannel blueAlliance   = null;
     public DigitalChannel thirdTile = null;
-    public DcMotor Cascade1              = null;
-    public DcMotor Cascade2              = null;
+    public DcMotor cascade1              = null;
+    public DcMotor cascade2              = null;
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
