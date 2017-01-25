@@ -32,7 +32,7 @@ public class Hardware5256
     public Servo arm                     = null;
     public Servo kicker                  = null;
     public DigitalChannel blueAlliance   = null;
-    public DigitalChannel thirdTile = null;
+    public DigitalChannel thirdTile      = null;
     public DcMotor cascade1              = null;
     public DcMotor cascade2              = null;
 
@@ -51,74 +51,29 @@ public class Hardware5256
         hwMap = ahwMap;
 
         // Define and Initialize Motors
-        try {
-            rightShoot   = hwMap.dcMotor.get("rShoot");
-        } catch (IllegalArgumentException e) {
-            telemetry.addLine("rShoot not found");
-        }
+        rightShoot   = hwMap.dcMotor.get("rShoot");
 
-        try {
-            leftShoot   = hwMap.dcMotor.get("lShoot");
-        } catch (IllegalArgumentException e ){
-            telemetry.addLine("lShoot not found");
-        }
+        leftShoot   = hwMap.dcMotor.get("lShoot");
+        sweeper = hwMap.dcMotor.get("sweeper");
+        kicker = hwMap.servo.get("kick");
 
-       // try {
-            sweeper = hwMap.dcMotor.get("sweeper");
-        //} catch (IllegalArgumentException e) {
-           // telemetry.addLine("sweep not found");
-       //}
+        arm = hwMap.servo.get("pusher");
 
-        try {
-            kicker = hwMap.servo.get("kick");
-        } catch (IllegalArgumentException e) {
-            telemetry.addLine("kick not found");
-        }
-
-        try {
-            arm = hwMap.servo.get("pusher");
-        } catch (IllegalArgumentException e) {
-            telemetry.addLine("pusher not found");
-        }
-
-        try {
-            beacon = hwMap.colorSensor.get("beacon");
-        } catch (IllegalArgumentException e) {
-            telemetry.addLine("beacon sensor not found");
-        }
-
-        try {
-            blueAlliance = hwMap.digitalChannel.get("alliance");
-        } catch (IllegalArgumentException e) {
-            telemetry.addLine("alliance switch not found");
-        }
-
-        try {
-            thirdTile = hwMap.digitalChannel.get("tile");
-        } catch (IllegalArgumentException e) {
-            telemetry.addLine("tile Switch not found");
-        }
-
-
+        beacon = hwMap.colorSensor.get("beacon");
+        blueAlliance = hwMap.digitalChannel.get("alliance");
+        thirdTile = hwMap.digitalChannel.get("tile");
 
         rightMotor  = hwMap.dcMotor.get("motorR");
         leftMotor = hwMap.dcMotor.get("motorL");
 
         leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
-        if (rightShoot != null) {
-            rightShoot.setDirection(DcMotor.Direction.REVERSE);
-        }
 
-        if (leftShoot != null) {
-            leftShoot.setDirection(DcMotor.Direction.FORWARD);
-        }
+        rightShoot.setDirection(DcMotor.Direction.REVERSE);
+        leftShoot.setDirection(DcMotor.Direction.FORWARD);
 
-        if (sweeper != null) {
-            sweeper.setDirection(DcMotor.Direction.REVERSE);
-            sweeper.setPower(0);
-        }
-
+        sweeper.setDirection(DcMotor.Direction.REVERSE);
+        sweeper.setPower(0);
 
         // Set all motors to zero power
         leftMotor.setPower(0);

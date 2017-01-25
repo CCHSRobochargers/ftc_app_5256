@@ -95,6 +95,9 @@ public class AutoGyroDrive extends LinearOpMode {
     static final double     HEADING_THRESHOLD       = 1 ;      // As tight as we can make it with an integer gyro
     static final double     P_TURN_COEFF            = 0.1;     // Larger is more responsive, but also less stable
     static final double     P_DRIVE_COEFF           = 0.15;     // Larger is more responsive, but also less stable
+    double shootValue = 0.0;
+
+
 
 
     @Override
@@ -161,35 +164,47 @@ public class AutoGyroDrive extends LinearOpMode {
             // blue alliance moves
             if (robot.thirdTile.getState()) {
                 // When "Third Tile." from the ramp corner.
+                upShooter();
                 gyroDrive(DRIVE_SPEED, 47.0, heading);
                 heading = heading - 45.0;
-                gyroDrive(DRIVE_SPEED, 12.0, heading);
+                gyroDrive(DRIVE_SPEED, 8.0, heading);
+                runIndexer();
+                gyroDrive(DRIVE_SPEED, 25.0, heading);
 
             } else {
                 telemetry.addData(">", "Blue, Fourth Tile");
                 // When "Fourth Tile." from the ramp corner.
-                gyroDrive(DRIVE_SPEED, 56.0, heading);
+                upShooter();
+                gyroDrive(DRIVE_SPEED, 41.0, heading);
                 heading = heading - 45.0;
                 gyroTurn(TURN_SPEED, heading);
+                runIndexer();
                 gyroDrive(DRIVE_SPEED, 30.0, heading);
+                downShooter();
             }
         } else {
             // Red alliance moves
             if (robot.thirdTile.getState()) {
                 telemetry.addData(">", "Red, Third Tile");
                 //  When "Third Tile." from the ramp corner.
-                gyroDrive(DRIVE_SPEED, 51, heading);
+                upShooter();
+                gyroDrive(DRIVE_SPEED, 47, heading);
                 heading = heading + 45.0;
-                gyroDrive(DRIVE_SPEED, 12.0, heading);
+                gyroDrive(DRIVE_SPEED, 8.0, heading);
+                runIndexer();
+                gyroDrive(DRIVE_SPEED, 25.0, heading);
+                downShooter();
 
             } else {
                 telemetry.addData(">", "Red, Fourth Tile");
                 // When "Fourth Tile." from the ramp corner.
-                sleep(10000);
-                gyroDrive(DRIVE_SPEED, 56.0, heading);
+                upShooter();
+                gyroDrive(DRIVE_SPEED, 41.0, heading);
                 heading = heading + 45.0;
                 gyroTurn(TURN_SPEED, heading);
+                runIndexer();
                 gyroDrive(DRIVE_SPEED, 30.0, heading);
+                downShooter();
             }
         }
         telemetry.addData("Path", "Complete");
@@ -424,5 +439,35 @@ public class AutoGyroDrive extends LinearOpMode {
     public double getSteer(double error, double PCoeff) {
         return Range.clip(error * PCoeff, -1, 1);
     }
+
+    public void upShooter() {
+        while (opModeIsActive() && shootValue < 0.2) {
+            shootValue += 0.02;
+            robot.rightShoot.setPower(shootValue);
+            robot.leftMotor.setPower(shootValue);
+            sleep(200);
+        }
+    }
+
+    public void runIndexer () {
+        robot.kicker.setPosition(1.0);
+        sleep(1000);
+        robot.kicker.setPosition(0.0);
+        sleep(1000);
+        robot.kicker.setPosition(1.0);
+        sleep(1000);
+        robot.kicker.setPosition(0.0);
+        sleep(1000);
+    }
+
+    public void downShooter() {
+        while (opModeIsActive() && shootValue > 0) {
+            shootValue -= 0.02;
+            robot.rightShoot.setPower(shootValue);
+            robot.leftMotor.setPower(shootValue);
+            sleep(200);
+        }
+    }
+
 
 }
