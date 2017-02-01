@@ -289,13 +289,13 @@ public class AutoGyroDrive extends LinearOpMode {
                 robot.leftMotor.setPower(leftSpeed);
                 robot.rightMotor.setPower(rightSpeed);
 
-                if ((color == Color.RED) && (robot.beacon.red() > 0)) {
-                    break;
-                }
+                //if ((color == Color.RED) && (robot.beacon.red() > 0)) {
+                //    break;
+               // }
 
-                if ((color == Color.BLUE) && (robot.beacon.blue() > 0)) {
-                    break;
-                }
+                //if ((color == Color.BLUE) && (robot.beacon.blue() > 0)) {
+                //    break;
+               // }
 
                 // Display drive status for the driver.
                 telemetry.addData("Err/St",  "%5.1f/%5.1f",  error, steer);

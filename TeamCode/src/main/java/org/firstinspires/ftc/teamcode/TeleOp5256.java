@@ -115,8 +115,8 @@ public class TeleOp5256 extends LinearOpMode {
             telemetry.addData("kick", servovalue);
             telemetry.update();
 
-            rightDrive = -gamepad1.right_stick_y;
-            leftDrive = -gamepad1.left_stick_y;
+            rightDrive = -gamepad1.right_stick_y / (1/3);
+            leftDrive = -gamepad1.left_stick_y / (1/3);
 
             robot.rightMotor.setPower(rightDrive);
             robot.leftMotor.setPower(leftDrive);
@@ -173,12 +173,12 @@ public class TeleOp5256 extends LinearOpMode {
                 bblock = false;
             }
 
-            if (gamepad2.left_bumper) {
-                robot.arm.setPosition(0.3);
+            if (gamepad2.x) {
+                //robot.arm.setPosition(0.3);
             }
 
-            if (gamepad2.right_bumper) {
-                robot.arm.setPosition(0.0);
+            if (gamepad2.y) {
+                //robot.arm.setPosition(0.0);
             }
 
             if (gamepad1.a) {

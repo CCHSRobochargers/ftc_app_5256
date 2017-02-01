@@ -28,8 +28,8 @@ public class Hardware5256
     public DcMotor rightShoot            = null;
     public DcMotor leftShoot             = null;
     public DcMotor sweeper               = null;
-    public ColorSensor beacon            = null;
-    public Servo arm                     = null;
+    //public ColorSensor beacon            = null;
+    //public Servo arm                     = null;
     public Servo kicker                  = null;
     public DigitalChannel blueAlliance   = null;
     public DigitalChannel thirdTile      = null;
@@ -51,20 +51,20 @@ public class Hardware5256
         hwMap = ahwMap;
 
         // Define and Initialize Motors
+        rightMotor  = hwMap.dcMotor.get("motorR");
+        leftMotor = hwMap.dcMotor.get("motorL");
         rightShoot   = hwMap.dcMotor.get("rShoot");
-
         leftShoot   = hwMap.dcMotor.get("lShoot");
+        cascade1 = hwMap.dcMotor.get("cascade1");
+        cascade2 = hwMap.dcMotor.get("cascade2");
         sweeper = hwMap.dcMotor.get("sweeper");
         kicker = hwMap.servo.get("kick");
 
-        arm = hwMap.servo.get("pusher");
+        //arm = hwMap.servo.get("pusher");
 
-        beacon = hwMap.colorSensor.get("beacon");
+        // = hwMap.colorSensor.get("beacon");
         blueAlliance = hwMap.digitalChannel.get("alliance");
         thirdTile = hwMap.digitalChannel.get("tile");
-
-        rightMotor  = hwMap.dcMotor.get("motorR");
-        leftMotor = hwMap.dcMotor.get("motorL");
 
         leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
@@ -84,7 +84,7 @@ public class Hardware5256
         leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        beacon.enableLed(false);
+       // beacon.enableLed(false);
     }
 
     /***
