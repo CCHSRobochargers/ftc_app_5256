@@ -117,6 +117,25 @@ public class TeleOp5256 extends LinearOpMode {
 
             rightDrive = -gamepad1.right_stick_y / (1/3);
             leftDrive = -gamepad1.left_stick_y / (1/3);
+            if (gamepad1.dpad_up) {
+                rightDrive = .5;
+                leftDrive = .5;
+            }
+
+            if (gamepad1.dpad_right) {
+                rightDrive = -.5;
+                leftDrive = .5;
+            }
+
+            if (gamepad1.dpad_left) {
+                rightDrive = .5;
+                leftDrive = -.5;
+            }
+
+            if (gamepad1.dpad_down) {
+                rightDrive = -.5;
+                leftDrive = -.5;
+            }
 
             robot.rightMotor.setPower(rightDrive);
             robot.leftMotor.setPower(leftDrive);
