@@ -35,6 +35,7 @@ public class Hardware5256
     public DigitalChannel thirdTile      = null;
     public DcMotor cascade1              = null;
     public DcMotor cascade2              = null;
+    public Servo hopper                  = null;
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
@@ -59,6 +60,7 @@ public class Hardware5256
         cascade2 = hwMap.dcMotor.get("cascade2");
         sweeper = hwMap.dcMotor.get("sweeper");
         kicker = hwMap.servo.get("kick");
+        hopper = hwMap.servo.get("hop");
 
         //arm = hwMap.servo.get("pusher");
 
@@ -74,6 +76,7 @@ public class Hardware5256
 
         sweeper.setDirection(DcMotor.Direction.REVERSE);
         sweeper.setPower(0);
+        hopper.setPosition(0.1);
 
         // Set all motors to zero power
         leftMotor.setPower(0);

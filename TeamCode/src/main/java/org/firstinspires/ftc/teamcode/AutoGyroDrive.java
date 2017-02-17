@@ -89,7 +89,7 @@ public class AutoGyroDrive extends LinearOpMode {
 
     // These constants define the desired driving/control characteristics
     // The can/should be tweaked to suite the specific robot drive train.
-    static final double     DRIVE_SPEED             = 0.8;     // Nominal speed for better accuracy.
+    static final double     DRIVE_SPEED             = 0.4;     // Nominal speed for better accuracy.
     static final double     TURN_SPEED              = 0.1;     // Nominal half speed for better accuracy.
 
     static final double     HEADING_THRESHOLD       = 1 ;      // As tight as we can make it with an integer gyro
@@ -164,22 +164,23 @@ public class AutoGyroDrive extends LinearOpMode {
             // blue alliance moves
             if (robot.thirdTile.getState()) {
                 // When "Third Tile." from the ramp corner.
+
+                gyroDrive(DRIVE_SPEED, -6.0, heading);
                 upShooter();
-                gyroDrive(DRIVE_SPEED, 47.0, heading);
-                heading = heading - 45.0;
-                gyroDrive(DRIVE_SPEED, 8.0, heading);
                 runIndexer();
-                gyroDrive(DRIVE_SPEED, 25.0, heading);
+                gyroDrive(DRIVE_SPEED, -5.0, heading);
+                downShooter();
 
             } else {
                 telemetry.addData(">", "Blue, Fourth Tile");
                 // When "Fourth Tile." from the ramp corner.
-                upShooter();
-                gyroDrive(DRIVE_SPEED, 41.0, heading);
+
+                gyroDrive(DRIVE_SPEED, -20.0, heading);
                 heading = heading - 45.0;
                 gyroTurn(TURN_SPEED, heading);
+                upShooter();
                 runIndexer();
-                gyroDrive(DRIVE_SPEED, 30.0, heading);
+                gyroDrive(DRIVE_SPEED, -18.0, heading);
                 downShooter();
             }
         } else {
@@ -187,23 +188,23 @@ public class AutoGyroDrive extends LinearOpMode {
             if (robot.thirdTile.getState()) {
                 telemetry.addData(">", "Red, Third Tile");
                 //  When "Third Tile." from the ramp corner.
+
+                gyroDrive(DRIVE_SPEED, -6.0, heading);
                 upShooter();
-                gyroDrive(DRIVE_SPEED, 47, heading);
-                heading = heading + 45.0;
-                gyroDrive(DRIVE_SPEED, 8.0, heading);
                 runIndexer();
-                gyroDrive(DRIVE_SPEED, 25.0, heading);
+                gyroDrive(DRIVE_SPEED, -5.0, heading);
                 downShooter();
 
             } else {
                 telemetry.addData(">", "Red, Fourth Tile");
                 // When "Fourth Tile." from the ramp corner.
-                upShooter();
-                gyroDrive(DRIVE_SPEED, 41.0, heading);
-                heading = heading + 45.0;
+
+                gyroDrive(DRIVE_SPEED, -20.0, heading);
+                heading = heading - 45.0;
                 gyroTurn(TURN_SPEED, heading);
+                upShooter();
                 runIndexer();
-                gyroDrive(DRIVE_SPEED, 30.0, heading);
+                gyroDrive(DRIVE_SPEED, -18.0, heading);
                 downShooter();
             }
         }
@@ -265,7 +266,8 @@ public class AutoGyroDrive extends LinearOpMode {
 
             // keep looping while we are still active, and BOTH motors are running.
             while (opModeIsActive() &&
-                   (robot.leftMotor.isBusy() && robot.rightMotor.isBusy())) {
+                    (Math.abs(robot.leftMotor.getCurrentPosition() - newLeftTarget) > COUNTS_PER_INCH / 2.0) &&
+                    (Math.abs(robot.rightMotor.getCurrentPosition() - newRightTarget) > COUNTS_PER_INCH / 2.0)) {
 
                 // adjust relative speed based on heading error.
                 error = getError(angle);
@@ -441,30 +443,37 @@ public class AutoGyroDrive extends LinearOpMode {
     }
 
     public void upShooter() {
-        while (opModeIsActive() && shootValue < 0.2) {
+        while (opModeIsActive() && shootValue < 0.21) {
             shootValue += 0.02;
             robot.rightShoot.setPower(shootValue);
-            robot.leftMotor.setPower(shootValue);
+            robot.leftShoot.setPower(shootValue);
             sleep(200);
         }
     }
 
     public void runIndexer () {
-        robot.kicker.setPosition(1.0);
-        sleep(1000);
-        robot.kicker.setPosition(0.0);
-        sleep(1000);
-        robot.kicker.setPosition(1.0);
-        sleep(1000);
-        robot.kicker.setPosition(0.0);
-        sleep(1000);
-    }
+        robot.sweeper.setPower(-.45);
+        robot.kicker.setPosition(0.75);
+        if (opModeIsActive()) {
+            sleep(500);
+        }
+        robot.kicker.setPosition(0.93);
+        if(opModeIsActive()) {
+            sleep(5000);
+        }
+        robot.kicker.setPosition(0.75);
+        if(opModeIsActive()) {
+            sleep(500);
+        }
+        robot.kicker.setPosition(0.93);
+        }
+
 
     public void downShooter() {
         while (opModeIsActive() && shootValue > 0) {
             shootValue -= 0.02;
             robot.rightShoot.setPower(shootValue);
-            robot.leftMotor.setPower(shootValue);
+            robot.leftShoot.setPower(shootValue);
             sleep(200);
         }
     }

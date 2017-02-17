@@ -99,24 +99,24 @@ public class K9botTeleopTank_Linear extends LinearOpMode {
             leftMotor.setPower(gamepad1.left_stick_y);
             rightMotor.setPower(gamepad1.right_stick_y);
 
-            if (gamepad2.right_trigger > 0.1) {
-                turret.setPower(gamepad2.right_trigger);
+            if (gamepad1.right_trigger > 0.1) {
+                turret.setPower(gamepad1.right_trigger);
                 turret.setDirection(DcMotorSimple.Direction.FORWARD);
 
-            } else if (gamepad2.left_trigger > 0.1){
-                turret.setPower(gamepad2.left_trigger);
+            } else if (gamepad1.left_trigger > 0.1){
+                turret.setPower(gamepad1.left_trigger);
                 turret.setDirection(DcMotorSimple.Direction.REVERSE);
             } else {
                 turret.setPower(0);
             }
 
-            if (gamepad2.a) {
+            if (gamepad1.a) {
                 led.setPower(1);
                 led1.setPower(0.5);
 
             }
 
-            if (gamepad2.b) {
+            if (gamepad1.b) {
                 led.setPower(-1);
                 led1.setPower(0);
             }
