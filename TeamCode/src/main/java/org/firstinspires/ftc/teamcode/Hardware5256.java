@@ -37,6 +37,12 @@ public class Hardware5256
     public DcMotor cascade2              = null;
     public Servo hopper                  = null;
 
+    public static final double kickerUp = 0.93;
+    public static final double kickerDown = 0.73;
+
+    public static final double hopperUp = 0.43;
+    public static final double hopperDown = 0.1;
+
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
     private ElapsedTime period  = new ElapsedTime();

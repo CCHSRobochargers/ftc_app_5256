@@ -94,7 +94,7 @@ public class TeleOp5256 extends LinearOpMode {
         robot.rightShoot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         robot.leftShoot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         robot.sweeper.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        robot.kicker.setPosition(0);
+        robot.kicker.setPosition(robot.kickerDown);
 
         /* eg: Initialize the hardware variables. Note that the strings used here as parameters
          * to 'get' must correspond to the names assigned during the robot configuration
@@ -111,7 +111,7 @@ public class TeleOp5256 extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
-        robot.kicker.setPosition(.75);
+        robot.kicker.setPosition(robot.kickerDown);
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -279,14 +279,14 @@ public class TeleOp5256 extends LinearOpMode {
             }
             if (gamepad2.dpad_left && !lefthop) {
                 lefthop = true;
-                robot.hopper.setPosition(0.43);
+                robot.hopper.setPosition(robot.hopperUp);
             }
             if (!gamepad2.dpad_left && lefthop){
                 lefthop = false;
             }
             if (gamepad2.dpad_right && !righthop) {
                 righthop = true;
-                robot.hopper.setPosition(0.1);
+                robot.hopper.setPosition(robot.hopperDown);
             }
             if (!gamepad2.dpad_right && righthop){
                 righthop = false;
