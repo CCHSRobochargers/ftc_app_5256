@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.UltrasonicSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -28,7 +30,8 @@ public class Hardware5256
     public DcMotor rightShoot            = null;
     public DcMotor leftShoot             = null;
     public DcMotor sweeper               = null;
-    //public ColorSensor beacon            = null;
+    public ColorSensor beacon            = null;
+    //public ModernRoboticsI2cRangeSensor rangeSensor = null;
     //public Servo arm                     = null;
     public Servo kicker                  = null;
     public DigitalChannel blueAlliance   = null;
@@ -36,12 +39,14 @@ public class Hardware5256
     public DcMotor cascade1              = null;
     public DcMotor cascade2              = null;
     public Servo hopper                  = null;
+    public Servo rightServo              = null;
+    public Servo leftServo               = null;
 
-    public static final double kickerUp = 0.93;
-    public static final double kickerDown = 0.73;
+    public static final double kickerUp = 0.73;
+    public static final double kickerDown = 0.93;
 
-    public static final double hopperUp = 0.43;
-    public static final double hopperDown = 0.1;
+    public static final double hopperUp = 0.9;
+    public static final double hopperDown = 0.43;
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
@@ -67,10 +72,18 @@ public class Hardware5256
         sweeper = hwMap.dcMotor.get("sweeper");
         kicker = hwMap.servo.get("kick");
         hopper = hwMap.servo.get("hop");
+        leftServo = hwMap.servo.get("leftServo");
+        rightServo = hwMap.servo.get("rightServo");
+
+
+
+
+        kicker.setPosition(kickerDown);
 
         //arm = hwMap.servo.get("pusher");
 
-        // = hwMap.colorSensor.get("beacon");
+        beacon = hwMap.colorSensor.get("beacon");
+        //rangeSensor = (ModernRoboticsI2cRangeSensor)hwMap.ultrasonicSensor.get("range");
         blueAlliance = hwMap.digitalChannel.get("alliance");
         thirdTile = hwMap.digitalChannel.get("tile");
 
@@ -83,6 +96,9 @@ public class Hardware5256
         sweeper.setDirection(DcMotor.Direction.REVERSE);
         sweeper.setPower(0);
         hopper.setPosition(0.1);
+        leftServo.setPosition(0.5);
+        rightServo.setPosition(0.5);
+        beacon.enableLed(false);
 
         // Set all motors to zero power
         leftMotor.setPower(0);

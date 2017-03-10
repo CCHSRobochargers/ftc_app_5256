@@ -81,12 +81,12 @@ public class TeleOp5256 extends LinearOpMode {
         boolean lefthop = false;
         boolean righthop = false;
 
-        double servovalue = 0.75;
+        double servovalue = robot.kickerDown;
         double rightDrive;
         double leftDrive;
         double rightShootValue = 0.0;
         double leftShootValue = 0.0;
-        double hopServo = 0.0;
+        double hopServo = robot.hopperUp;
 
 
         robot.leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -95,6 +95,7 @@ public class TeleOp5256 extends LinearOpMode {
         robot.leftShoot.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         robot.sweeper.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         robot.kicker.setPosition(robot.kickerDown);
+        robot.hopper.setPosition(robot.hopperUp);
 
         /* eg: Initialize the hardware variables. Note that the strings used here as parameters
          * to 'get' must correspond to the names assigned during the robot configuration
@@ -111,7 +112,7 @@ public class TeleOp5256 extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
-        robot.kicker.setPosition(robot.kickerDown);
+
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -119,9 +120,8 @@ public class TeleOp5256 extends LinearOpMode {
             telemetry.addData("Left", leftShootValue);
             telemetry.addData("Right", rightShootValue);
             telemetry.addData("kick", servovalue);
-            telemetry.update();
             telemetry.addData("hop",hopServo);
-
+            telemetry.update();
             rightDrive = -gamepad1.right_stick_y;
             leftDrive = -gamepad1.left_stick_y;
             if (gamepad1.dpad_up) {
@@ -157,7 +157,7 @@ public class TeleOp5256 extends LinearOpMode {
             //drive
 
             if (gamepad2.dpad_up && dpadblockup == false) {
-                if (rightShootValue <= 1) {
+                if (rightShootValue < 0.24) {
                     rightShootValue += 0.02;
                     leftShootValue += 0.02;
                 }
@@ -186,8 +186,8 @@ public class TeleOp5256 extends LinearOpMode {
 
 
             if (gamepad2.a && ablock == false) {
-                if (servovalue <= 0.75) {
-                    servovalue = 0.93;
+                if (servovalue <= robot.kickerDown) {
+                    servovalue = robot.kickerUp;
                 }
                 robot.kicker.setPosition(servovalue);
                 ablock = true;
@@ -197,8 +197,8 @@ public class TeleOp5256 extends LinearOpMode {
             }
 
             if (gamepad2.b && bblock == false) {
-                if (servovalue >= 0.93) {
-                    servovalue = 0.75;
+                if (servovalue >= robot.kickerUp) {
+                    servovalue = robot.kickerDown;
                 }
                 robot.kicker.setPosition(servovalue);
                 bblock = true;
@@ -227,13 +227,13 @@ public class TeleOp5256 extends LinearOpMode {
                 robot.sweeper.setPower(0.0);
             }
 
-            if (gamepad2.right_trigger > 0.1) {
+            if (gamepad2.right_trigger > 0.1 && rightShootValue < 0.1) {
                 robot.cascade1.setDirection(DcMotorSimple.Direction.FORWARD);
                 robot.cascade1.setPower(gamepad2.right_trigger);
                 //robot.cascade2.setDirection(DcMotorSimple.Direction.REVERSE);
                // robot.cascade2.setPower(gamepad2.right_trigger);
                 cascadeKillPower = false;
-            } else if (gamepad2.right_bumper ) {  // add back left trigger > 1.0
+            } else if (gamepad2.right_bumper && rightShootValue < 0.1) {  // add back left trigger > 1.0
                 robot.cascade1.setDirection(DcMotorSimple.Direction.REVERSE);
                 robot.cascade1.setPower(0.8);// add the power of left trigger back
                // robot.cascade2.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -251,13 +251,13 @@ public class TeleOp5256 extends LinearOpMode {
                // robot.cascade2.setPower(0.0);
             }
 
-            if (gamepad2.left_trigger > 0.1) {
+            if (gamepad2.left_trigger > 0.1 && rightShootValue < 0.1) {
                 //robot.cascade1.setDirection(DcMotorSimple.Direction.FORWARD);
                 //robot.cascade1.setPower(gamepad2.right_trigger);
                 robot.cascade2.setDirection(DcMotorSimple.Direction.REVERSE);
                 robot.cascade2.setPower(gamepad2.left_trigger);
                 cascadeKillPower = false;
-            } else if (gamepad2.left_bumper) {// add back left trigger > 1.0
+            } else if (gamepad2.left_bumper && rightShootValue < 0.1) {// add back left trigger > 1.0
                 //robot.cascade1.setDirection(DcMotorSimple.Direction.REVERSE);
                 //robot.cascade1.setPower(gamepad2.left_trigger);
                 robot.cascade2.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -277,20 +277,27 @@ public class TeleOp5256 extends LinearOpMode {
             if (gamepad2.x){
                 cascadeKillPower = true;
             }
-            if (gamepad2.dpad_left && !lefthop) {
+            if (gamepad1.right_trigger > 0.5 ) {
                 lefthop = true;
                 robot.hopper.setPosition(robot.hopperUp);
+                robot.sweeper.setPower(-0.45);
             }
-            if (!gamepad2.dpad_left && lefthop){
-                lefthop = false;
-            }
-            if (gamepad2.dpad_right && !righthop) {
+
+            if (gamepad1.left_trigger > 0.5 && !righthop) {
                 righthop = true;
                 robot.hopper.setPosition(robot.hopperDown);
+                robot.sweeper.setPower(0.0);
             }
-            if (!gamepad2.dpad_right && righthop){
-                righthop = false;
+
+            if (gamepad1.right_bumper) {
+                robot.rightServo.setPosition(1.0);
+            } else if (gamepad1.left_bumper) {
+                robot.leftServo.setPosition(0.5);
             }
+
+
+
+
 
 
 
