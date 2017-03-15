@@ -31,13 +31,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
 
 /**
  * This file illustrates the concept of driving a path based on Gyro heading and encoder counts.
@@ -80,24 +78,24 @@ public class AutoGyroDrive extends LinearOpMode {
     enum Color {NONE, RED, GREEN, BLUE}
 
     /* Declare OpMode members. */
-    Hardware5256         robot   = new Hardware5256();   // Use a Pushbot's hardware
-    ModernRoboticsI2cGyro   gyro    = null;                    // Additional Gyro device
+    Hardware5256 robot = new Hardware5256();   // Use a Pushbot's hardware
+    ModernRoboticsI2cGyro gyro = null;                    // Additional Gyro device
 
-    static final double     COUNTS_PER_MOTOR_REV    = 1120;    // eg: neverest
-    static final double     DRIVE_GEAR_REDUCTION    = 1.0;     // This is < 1.0 if geared UP
-    static final double     WHEEL_DIAMETER_INCHES   = 4.0;     // For figuring circumference
-    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-                                                      (WHEEL_DIAMETER_INCHES * 3.1415);
+    static final double COUNTS_PER_MOTOR_REV = 1120;    // eg: neverest
+    static final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
+    static final double WHEEL_DIAMETER_INCHES = 4.0;     // For figuring circumference
+    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+            (WHEEL_DIAMETER_INCHES * 3.1415);
 
     // These constants define the desired driving/control characteristics
     // The can/should be tweaked to suite the specific robot drive train.
-    static final double     DRIVE_SPEED             = 0.4;     // Nominal speed for better accuracy.
-    static final double     TURN_SPEED              = 0.4;     // Nominal half speed for better accuracy.
+    static final double DRIVE_SPEED = 0.4;     // Nominal speed for better accuracy.
+    static final double TURN_SPEED = 0.4;     // Nominal half speed for better accuracy.
 
-    static final double     HEADING_THRESHOLD       = 1 ;      // As tight as we can make it with an integer gyro
-    static final double     P_TURN_COEFF            = 0.025;     // Larger is more responsive, but also less stable
-    static final double     P_DRIVE_COEFF           = 0.025;     // Larger is more responsive, but also less stable
-    static final double     GYRO_HOLD_WAIT          = 0.5;
+    static final double HEADING_THRESHOLD = 1;      // As tight as we can make it with an integer gyro
+    static final double P_TURN_COEFF = 0.025;     // Larger is more responsive, but also less stable
+    static final double P_DRIVE_COEFF = 0.025;     // Larger is more responsive, but also less stable
+    static final double GYRO_HOLD_WAIT = 0.5;
     double shootValue = 0.0;
 
     @Override
@@ -108,7 +106,7 @@ public class AutoGyroDrive extends LinearOpMode {
          * The init() method of the hardware class does most of the work here
          */
         robot.init(hardwareMap, telemetry);
-        gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
+        gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
         double heading = 0.0;
         double drivespeed = 0.0;
 
@@ -140,7 +138,7 @@ public class AutoGyroDrive extends LinearOpMode {
         }
         telemetry.update();
         // make sure the gyro is calibrated before continuing
-        while (!isStopRequested() && gyro.isCalibrating())  {
+        while (!isStopRequested() && gyro.isCalibrating()) {
             sleep(50);
             idle();
         }
@@ -159,69 +157,77 @@ public class AutoGyroDrive extends LinearOpMode {
         }
         gyro.resetZAxisIntegrator();
 
+        ShooterCtlrThread shooterUp = new ShooterCtlrThread(robot.leftShoot, robot.rightShoot, 0.0, 0.25, 1000);
+        ShooterCtlrThread shooterDown = new ShooterCtlrThread(robot.leftShoot, robot.rightShoot, 0.25, 0.0, 2000);
         telemetry.addData(">", "Robot Heading Post-Reset = %d", gyro.getIntegratedZValue());
         if (robot.blueAlliance.getState()) {
             // blue alliance moves
             if (robot.thirdTile.getState()) {
                 // When "Third Tile." from the ramp corner.
 
-                gyroDrive(DRIVE_SPEED, 40.6, heading);
-                heading = heading - 90.0;
-                gyroTurn(TURN_SPEED, heading);
-                gyroHold(TURN_SPEED, heading, GYRO_HOLD_WAIT);
-                gyroDrive(DRIVE_SPEED, 55.5, heading);
-                beaconPushBlue();
-                gyroDrive(DRIVE_SPEED, -15.0, heading);
-                heading = heading + 90.0;
-                gyroTurn(TURN_SPEED, heading);
-                gyroHold(TURN_SPEED, heading, GYRO_HOLD_WAIT);
-                gyroDrive(DRIVE_SPEED, 47.5, heading);
-                heading = heading - 90.0;
-                gyroTurn(TURN_SPEED, heading);
-                gyroHold(TURN_SPEED, heading, GYRO_HOLD_WAIT);
-                gyroDrive(DRIVE_SPEED, 18.0, heading);
-                beaconPushBlue();
 
-          /*
-                gyroDrive(DRIVE_SPEED, -21.0, heading);
-                robot.hopper.setPosition(robot.hopperUp);
-                upShooter();
-                runIndexer();
-                heading = heading - 5.0;
+                gyroDrive(DRIVE_SPEED, 20.5, heading);
+                gyroHold(TURN_SPEED, heading, GYRO_HOLD_WAIT);
+                heading = heading - 45.0;
+                shooterUp.start();
                 gyroTurn(TURN_SPEED, heading);
-                gyroDrive(DRIVE_SPEED, -37.0, heading);
-                downShooter();
-            */
+                gyroHold(TURN_SPEED, heading, GYRO_HOLD_WAIT);
+                gyroDrive(DRIVE_SPEED, 49.0, heading);
+                gyroHold(TURN_SPEED, heading, GYRO_HOLD_WAIT);
+                heading = heading - 45.0;
+                gyroTurn(TURN_SPEED, heading);
+                gyroHold(TURN_SPEED, heading, GYRO_HOLD_WAIT);
+                runIndexer();
+                sleep(500);
+                shooterDown.start();
+                gyroDrive(DRIVE_SPEED, 9.0, heading);
+                beaconPushBlue();
+                gyroDrive(DRIVE_SPEED, 48.0, heading);
+
+
+//                shooterUp.start();
+//                gyroDrive(DRIVE_SPEED, -21.0, heading);
+//                robot.hopper.setPosition(robot.hopperUp);
+////                upShooter();
+//
+//                runIndexer();
+//                sleep(500);
+//                shooterDown.start();
+//                heading = heading - 5.0;
+//                gyroTurn(TURN_SPEED, heading);
+//                gyroDrive(DRIVE_SPEED, -37.0, heading);
+////                downShooter();
+
             } else {
                 telemetry.addData(">", "Blue, Fourth Tile");
                 // When "Fourth Tile." from the ramp corner.
 
-                gyroDrive(DRIVE_SPEED, 35.0, heading);
-                heading = heading - 90.0;
-                gyroTurn(TURN_SPEED, heading);
-                gyroDrive(DRIVE_SPEED, 77.0, heading);
-                beaconPushBlue();
-                gyroDrive(DRIVE_SPEED, -15.0, heading);
-                heading = heading + 90.0;
-                gyroTurn(TURN_SPEED, heading);
-                gyroDrive(DRIVE_SPEED, 47.5, heading);
-                heading = heading - 90.0;
-                gyroTurn(TURN_SPEED, heading);
-                gyroDrive(DRIVE_SPEED, 18.0, heading);
-                beaconPushBlue();
+//                gyroDrive(DRIVE_SPEED, 35.0, heading);
+//                heading = heading - 90.0;
+//                gyroTurn(TURN_SPEED, heading);
+//                gyroDrive(DRIVE_SPEED, 77.0, heading);
+//                beaconPushBlue();
+//                gyroDrive(DRIVE_SPEED, -15.0, heading);
+//                heading = heading + 90.0;
+//                gyroTurn(TURN_SPEED, heading);
+//                gyroDrive(DRIVE_SPEED, 47.5, heading);
+//                heading = heading - 90.0;
+//                gyroTurn(TURN_SPEED, heading);
+//                gyroDrive(DRIVE_SPEED, 18.0, heading);
+//                beaconPushBlue();
 
-            /*
+
                 sleep(8000);
                 gyroDrive(DRIVE_SPEED, -30.0, heading);
                 robot.hopper.setPosition(robot.hopperUp);
                 heading = heading - 40.0;
                 gyroTurn(TURN_SPEED, heading);
-                gyroDrive(DRIVE_SPEED,-3.0,heading);
+                gyroDrive(DRIVE_SPEED, -3.0, heading);
                 upShooter();
                 runIndexer();
                 gyroDrive(DRIVE_SPEED, -30.0, heading);
                 downShooter();
-            */
+
             }
         } else {
             // Red alliance moves
@@ -229,116 +235,114 @@ public class AutoGyroDrive extends LinearOpMode {
                 telemetry.addData(">", "Red, Third Tile");
                 //  When "Third Tile." from the ramp corner.
 
-                gyroDrive(DRIVE_SPEED, 20.5, heading);
-                gyroHold(TURN_SPEED, heading, GYRO_HOLD_WAIT);
-                heading = heading + 45.0;
-                gyroTurn(TURN_SPEED, heading);
-                gyroHold(TURN_SPEED, heading, GYRO_HOLD_WAIT);
-                gyroDrive(DRIVE_SPEED, 49.0, heading);
-                gyroHold(TURN_SPEED, heading, GYRO_HOLD_WAIT);
-                heading = heading + 45.0;
-                gyroTurn(TURN_SPEED, heading);
-                gyroHold(TURN_SPEED, heading, GYRO_HOLD_WAIT);
-                gyroDrive(DRIVE_SPEED, 9.0, heading);
-                beaconPushRed();
-                gyroDrive(DRIVE_SPEED, -15.0, heading);
-                heading = heading + 90.0;
-                gyroTurn(TURN_SPEED, heading);
-                gyroDrive(DRIVE_SPEED, 47.5, heading);
-                heading = heading - 90.0;
-                gyroTurn(TURN_SPEED, heading);
-                gyroDrive(DRIVE_SPEED, 18.0, heading);
-                beaconPushRed();
+//                gyroDrive(DRIVE_SPEED, 20.5, heading);
+//                gyroHold(TURN_SPEED, heading, GYRO_HOLD_WAIT);
+//                heading = heading + 45.0;
+//                gyroTurn(TURN_SPEED, heading);
+//                gyroHold(TURN_SPEED, heading, GYRO_HOLD_WAIT);
+//                gyroDrive(DRIVE_SPEED, 49.0, heading);
+//                gyroHold(TURN_SPEED, heading, GYRO_HOLD_WAIT);
+//                heading = heading + 45.0;
+//                gyroTurn(TURN_SPEED, heading);
+//                gyroHold(TURN_SPEED, heading, GYRO_HOLD_WAIT);
+//                gyroDrive(DRIVE_SPEED, 9.0, heading);
+//                beaconPushRed();
+//                gyroDrive(DRIVE_SPEED, -15.0, heading);
+//                heading = heading + 90.0;
+//                gyroTurn(TURN_SPEED, heading);
+//                gyroDrive(DRIVE_SPEED, 47.5, heading);
+//                heading = heading - 90.0;
+//                gyroTurn(TURN_SPEED, heading);
+//                gyroDrive(DRIVE_SPEED, 18.0, heading);
+//                beaconPushRed();
 
-                /*
+                shooterUp.start();
                 gyroDrive(DRIVE_SPEED, -21.0, heading);
                 robot.hopper.setPosition(robot.hopperUp);
-                upShooter();
+//                upShooter();
                 runIndexer();
+                sleep(500);
+                shooterDown.start();
                 heading = heading - 5.0;
                 gyroTurn(TURN_SPEED, heading);
                 gyroDrive(DRIVE_SPEED, -37.0, heading);
-                downShooter();
-            */
+//                downShooter();
 
 
-
-
-
-               // gyroDrive(DRIVE_SPEED, -37.0, heading);
+                // gyroDrive(DRIVE_SPEED, -37.0, heading);
 
 
             } else {
                 telemetry.addData(">", "Red, Fourth Tile");
                 // When "Fourth Tile." from the ramp corner.
-                gyroDrive(DRIVE_SPEED, 35.0, heading);
-                heading = heading + 90.0;
-                gyroTurn(TURN_SPEED, heading);
-                gyroDrive(DRIVE_SPEED, 77.0, heading);
-                beaconPushRed();
-                gyroDrive(DRIVE_SPEED, -15.0, heading);
-                heading = heading + 90.0;
-                gyroTurn(TURN_SPEED, heading);
-                gyroDrive(DRIVE_SPEED, 47.5, heading);
-                heading = heading - 90.0;
-                gyroTurn(TURN_SPEED, heading);
-                gyroDrive(DRIVE_SPEED, 18.0, heading);
-                beaconPushRed();
+//                gyroDrive(DRIVE_SPEED, 35.0, heading);
+//                heading = heading + 90.0;
+//                gyroTurn(TURN_SPEED, heading);
+//                gyroDrive(DRIVE_SPEED, 77.0, heading);
+//                beaconPushRed();
+//                gyroDrive(DRIVE_SPEED, -15.0, heading);
+//                heading = heading + 90.0;
+//                gyroTurn(TURN_SPEED, heading);
+//                gyroDrive(DRIVE_SPEED, 47.5, heading);
+//                heading = heading - 90.0;
+//                gyroTurn(TURN_SPEED, heading);
+//                gyroDrive(DRIVE_SPEED, 18.0, heading);
+//                beaconPushRed();
 
-                /*
+                sleep(8000);
                 gyroDrive(DRIVE_SPEED, -30.0, heading);
                 robot.hopper.setPosition(robot.hopperUp);
                 heading = heading + 40.0;
                 gyroTurn(TURN_SPEED, heading);
-                gyroDrive(DRIVE_SPEED,-3.0,heading);
+                gyroDrive(DRIVE_SPEED, -3.0, heading);
                 upShooter();
                 runIndexer();
                 gyroDrive(DRIVE_SPEED, -30.0, heading);
                 downShooter();
-                */
+
             }
         }
         telemetry.addData("Path", "Complete");
         telemetry.update();
 
-        while (!isStopRequested())  {
+        while (!isStopRequested()) {
             sleep(50);
             idle();
         }
     }
 
 
-   /**
-    *  Method to drive on a fixed compass bearing (angle), based on encoder counts.
-    *  Move will stop if either of these conditions occur:
-    *  1) Move gets to the desired position
-    *  2) Driver stops the opmode running.
-    *
-    * @param speed      Target speed for forward motion.  Should allow for _/- variance for adjusting heading
-    * @param distance   Distance (in inches) to move from current position.  Negative distance means move backwards.
-    * @param angle      Absolute Angle (in Degrees) relative to last gyro reset.
-    *                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
-    *                   If a relative angle is required, add/subtract from current heading.
-    */
-    public void gyroDrive ( double speed,
-                            double distance,
-                            double angle,
-                            Color color) {
+    /**
+     * Method to drive on a fixed compass bearing (angle), based on encoder counts.
+     * Move will stop if either of these conditions occur:
+     * 1) Move gets to the desired position
+     * 2) Driver stops the opmode running.
+     *
+     * @param speed    Target speed for forward motion.  Should allow for _/- variance for adjusting heading
+     * @param distance Distance (in inches) to move from current position.  Negative distance means move backwards.
+     * @param angle    Absolute Angle (in Degrees) relative to last gyro reset.
+     *                 0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
+     *                 If a relative angle is required, add/subtract from current heading.
+     */
+    public void gyroDrive(double speed,
+                          double distance,
+                          double angle,
+                          Color color) {
 
-        int     newLeftTarget;
-        int     newRightTarget;
-        int     moveCounts;
-        double  max;
-        double  error;
-        double  steer;
-        double  leftSpeed;
-        double  rightSpeed;
+        int newLeftTarget;
+        int newRightTarget;
+        int moveCounts;
+        double max;
+        double error;
+        double steer;
+        double leftSpeed;
+        double rightSpeed;
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
-            moveCounts = (int)(distance * COUNTS_PER_INCH);
+            moveCounts = (int) (distance * COUNTS_PER_INCH);
             newLeftTarget = robot.leftMotor.getCurrentPosition() + moveCounts;
             newRightTarget = robot.rightMotor.getCurrentPosition() + moveCounts;
 
@@ -372,8 +376,7 @@ public class AutoGyroDrive extends LinearOpMode {
 
                 // Normalize speeds if any one exceeds +/- 1.0;
                 max = Math.max(Math.abs(leftSpeed), Math.abs(rightSpeed));
-                if (max > 1.0)
-                {
+                if (max > 1.0) {
                     leftSpeed /= max;
                     rightSpeed /= max;
                 }
@@ -383,18 +386,18 @@ public class AutoGyroDrive extends LinearOpMode {
 
                 //if ((color == Color.RED) && (robot.beacon.red() > 0)) {
                 //    break;
-               // }
+                // }
 
                 //if ((color == Color.BLUE) && (robot.beacon.blue() > 0)) {
                 //    break;
-               // }
+                // }
 
                 // Display drive status for the driver.
-                telemetry.addData("Err/St",  "%5.1f/%5.1f",  error, steer);
-                telemetry.addData("Target",  "%7d:%7d",      newLeftTarget,  newRightTarget);
-                telemetry.addData("Actual",  "%7d:%7d",      robot.leftMotor.getCurrentPosition(),
-                                                             robot.rightMotor.getCurrentPosition());
-                telemetry.addData("Speed",   "%5.2f:%5.2f",  leftSpeed, rightSpeed);
+                telemetry.addData("Err/St", "%5.1f/%5.1f", error, steer);
+                telemetry.addData("Target", "%7d:%7d", newLeftTarget, newRightTarget);
+                telemetry.addData("Actual", "%7d:%7d", robot.leftMotor.getCurrentPosition(),
+                        robot.rightMotor.getCurrentPosition());
+                telemetry.addData("Speed", "%5.2f:%5.2f", leftSpeed, rightSpeed);
                 telemetry.update();
             }
 
@@ -408,24 +411,24 @@ public class AutoGyroDrive extends LinearOpMode {
         }
     }
 
-    public void gyroDrive ( double speed,
-                            double distance,
-                            double angle) {
+    public void gyroDrive(double speed,
+                          double distance,
+                          double angle) {
         gyroDrive(speed, distance, angle, Color.NONE);
     }
 
     /**
-     *  Method to spin on central axis to point in a new direction.
-     *  Move will stop if either of these conditions occur:
-     *  1) Move gets to the heading (angle)
-     *  2) Driver stops the opmode running.
+     * Method to spin on central axis to point in a new direction.
+     * Move will stop if either of these conditions occur:
+     * 1) Move gets to the heading (angle)
+     * 2) Driver stops the opmode running.
      *
      * @param speed Desired speed of turn.
-     * @param angle      Absolute Angle (in Degrees) relative to last gyro reset.
-     *                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
-     *                   If a relative angle is required, add/subtract from current heading.
+     * @param angle Absolute Angle (in Degrees) relative to last gyro reset.
+     *              0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
+     *              If a relative angle is required, add/subtract from current heading.
      */
-    public void gyroTurn (  double speed, double angle) {
+    public void gyroTurn(double speed, double angle) {
 
         // keep looping while we are still active, and not on heading.
         while (opModeIsActive() && !onHeading(speed, angle, P_TURN_COEFF)) {
@@ -435,16 +438,16 @@ public class AutoGyroDrive extends LinearOpMode {
     }
 
     /**
-     *  Method to obtain & hold a heading for a finite amount of time
-     *  Move will stop once the requested time has elapsed
+     * Method to obtain & hold a heading for a finite amount of time
+     * Move will stop once the requested time has elapsed
      *
-     * @param speed      Desired speed of turn.
-     * @param angle      Absolute Angle (in Degrees) relative to last gyro reset.
-     *                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
-     *                   If a relative angle is required, add/subtract from current heading.
-     * @param holdTime   Length of time (in seconds) to hold the specified heading.
+     * @param speed    Desired speed of turn.
+     * @param angle    Absolute Angle (in Degrees) relative to last gyro reset.
+     *                 0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
+     *                 If a relative angle is required, add/subtract from current heading.
+     * @param holdTime Length of time (in seconds) to hold the specified heading.
      */
-    public void gyroHold( double speed, double angle, double holdTime) {
+    public void gyroHold(double speed, double angle, double holdTime) {
 
         ElapsedTime holdTimer = new ElapsedTime();
 
@@ -464,17 +467,17 @@ public class AutoGyroDrive extends LinearOpMode {
     /**
      * Perform one cycle of closed loop heading control.
      *
-     * @param speed     Desired speed of turn.
-     * @param angle     Absolute Angle (in Degrees) relative to last gyro reset.
-     *                  0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
-     *                  If a relative angle is required, add/subtract from current heading.
-     * @param PCoeff    Proportional Gain coefficient
+     * @param speed  Desired speed of turn.
+     * @param angle  Absolute Angle (in Degrees) relative to last gyro reset.
+     *               0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
+     *               If a relative angle is required, add/subtract from current heading.
+     * @param PCoeff Proportional Gain coefficient
      * @return
      */
     boolean onHeading(double speed, double angle, double PCoeff) {
-        double   error ;
-        double   steer ;
-        boolean  onTarget = false ;
+        double error;
+        double steer;
+        boolean onTarget = false;
         double leftSpeed;
         double rightSpeed;
 
@@ -483,14 +486,13 @@ public class AutoGyroDrive extends LinearOpMode {
 
         if (Math.abs(error) <= HEADING_THRESHOLD) {
             steer = 0.0;
-            leftSpeed  = 0.0;
+            leftSpeed = 0.0;
             rightSpeed = 0.0;
             onTarget = true;
-        }
-        else {
+        } else {
             steer = getSteer(error, PCoeff);
-            rightSpeed  = speed * steer;
-            leftSpeed   = -rightSpeed;
+            rightSpeed = speed * steer;
+            leftSpeed = -rightSpeed;
         }
 
         // Send desired speeds to motors.
@@ -501,7 +503,7 @@ public class AutoGyroDrive extends LinearOpMode {
         telemetry.addData("Target", "%5.2f", angle);
         telemetry.addData("Err/St", "%5.2f/%5.2f", error, steer);
         telemetry.addData("Speed.", "%5.2f:%5.2f", leftSpeed, rightSpeed);
-        telemetry.addData("Color Red", robot.beacon.red() );
+        telemetry.addData("Color Red", robot.beacon.red());
         telemetry.addData("Color Blue", robot.beacon.blue());
 
         return onTarget;
@@ -509,9 +511,10 @@ public class AutoGyroDrive extends LinearOpMode {
 
     /**
      * getError determines the error between the target angle and the robot's current heading
-     * @param   targetAngle  Desired angle (relative to global reference established at last Gyro Reset).
-     * @return  error angle: Degrees in the range +/- 180. Centered on the robot's frame of reference
-     *          +ve error means the robot should turn LEFT (CCW) to reduce error.
+     *
+     * @param targetAngle Desired angle (relative to global reference established at last Gyro Reset).
+     * @return error angle: Degrees in the range +/- 180. Centered on the robot's frame of reference
+     * +ve error means the robot should turn LEFT (CCW) to reduce error.
      */
     public double getError(double targetAngle) {
 
@@ -519,15 +522,16 @@ public class AutoGyroDrive extends LinearOpMode {
 
         // calculate error in -179 to +180 range  (
         robotError = targetAngle - gyro.getIntegratedZValue();
-        while (robotError > 180)  robotError -= 360;
+        while (robotError > 180) robotError -= 360;
         while (robotError <= -180) robotError += 360;
         return robotError;
     }
 
     /**
      * returns desired steering force.  +/- 1 range.  +ve = steer left
-     * @param error   Error angle in robot relative degrees
-     * @param PCoeff  Proportional Gain Coefficient
+     *
+     * @param error  Error angle in robot relative degrees
+     * @param PCoeff Proportional Gain Coefficient
      * @return
      */
     public double getSteer(double error, double PCoeff) {
@@ -543,18 +547,18 @@ public class AutoGyroDrive extends LinearOpMode {
         }
     }
 
-    public void runIndexer () {
+    public void runIndexer() {
         robot.sweeper.setPower(-.45);
         robot.kicker.setPosition(robot.kickerDown);
         if (opModeIsActive()) {
             sleep(500);
         }
         robot.kicker.setPosition(robot.kickerUp);
-        if(opModeIsActive()) {
+        if (opModeIsActive()) {
             sleep(50);
         }
         robot.kicker.setPosition(robot.kickerDown);
-        if(opModeIsActive()) {
+        if (opModeIsActive()) {
             sleep(500);
         }
         robot.kicker.setPosition(robot.kickerUp);
@@ -571,7 +575,7 @@ public class AutoGyroDrive extends LinearOpMode {
         }
     }
 
-    public void beaconPushRed () {
+    public void beaconPushRed() {
         if (robot.beacon.red() > 0) {
             robot.rightServo.setPosition(1.0);
             sleep(2000);
@@ -583,15 +587,17 @@ public class AutoGyroDrive extends LinearOpMode {
         }
     }
 
-    public void beaconPushBlue () {
-        if (robot.beacon.blue() > 0) {
+    public void beaconPushBlue() {
+        if (robot.beacon.blue() > robot.beacon.red()) {
             robot.rightServo.setPosition(1.0);
             sleep(2000);
-        } else {
-            robot.leftServo.setPosition(1.0);
-            sleep(2000);
+            if (robot.beacon.red() > robot.beacon.blue()) {
+                sleep(5000);
+            } else if (robot.beacon.blue() > robot.beacon.red()) {
+                robot.rightServo.setPosition(0.5);
+            }
+
+
         }
     }
-
-
 }

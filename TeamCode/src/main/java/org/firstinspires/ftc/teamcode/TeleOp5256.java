@@ -278,22 +278,26 @@ public class TeleOp5256 extends LinearOpMode {
                 cascadeKillPower = true;
             }
             if (gamepad1.right_trigger > 0.5 ) {
-                lefthop = true;
+                //lefthop = true;
                 robot.hopper.setPosition(robot.hopperUp);
                 robot.sweeper.setPower(-0.45);
             }
 
-            if (gamepad1.left_trigger > 0.5 && !righthop) {
-                righthop = true;
+            if (gamepad1.left_trigger > 0.5 ) {
+                //righthop = true;
                 robot.hopper.setPosition(robot.hopperDown);
                 robot.sweeper.setPower(0.0);
             }
 
             if (gamepad1.right_bumper) {
-                robot.rightServo.setPosition(1.0);
+                robot.leftServo.setPosition(1.0);
             } else if (gamepad1.left_bumper) {
+                robot.leftServo.setPosition(0.0);
+            } else {
                 robot.leftServo.setPosition(0.5);
+                robot.rightServo.setPosition(0.5);
             }
+
 
 
 
