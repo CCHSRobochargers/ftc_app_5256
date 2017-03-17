@@ -116,6 +116,8 @@ public class TeleOp5256 extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+            telemetry.addData("rightEncoder", robot.rightMotor.getCurrentPosition());
+            telemetry.addData("leftEncoder", robot.leftMotor.getCurrentPosition());
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Left", leftShootValue);
             telemetry.addData("Right", rightShootValue);
@@ -124,6 +126,7 @@ public class TeleOp5256 extends LinearOpMode {
             telemetry.update();
             rightDrive = -gamepad1.right_stick_y;
             leftDrive = -gamepad1.left_stick_y;
+
             if (gamepad1.dpad_up) {
                 rightDrive = .5;
                 leftDrive = .5;

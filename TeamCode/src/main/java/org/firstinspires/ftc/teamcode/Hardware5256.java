@@ -95,7 +95,7 @@ public class Hardware5256
 
         sweeper.setDirection(DcMotor.Direction.REVERSE);
         sweeper.setPower(0);
-        hopper.setPosition(0.1);
+        hopper.setPosition(0.7);
         leftServo.setPosition(0.5);
         rightServo.setPosition(0.5);
         beacon.enableLed(false);
@@ -106,8 +106,8 @@ public class Hardware5256
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
-        leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
        // beacon.enableLed(false);
     }

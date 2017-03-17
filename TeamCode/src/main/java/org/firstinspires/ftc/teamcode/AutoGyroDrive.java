@@ -30,12 +30,17 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode;
 
+import android.util.Log;
+
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.robot.Robot;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+
 
 /**
  * This file illustrates the concept of driving a path based on Gyro heading and encoder counts.
@@ -90,13 +95,19 @@ public class AutoGyroDrive extends LinearOpMode {
     // These constants define the desired driving/control characteristics
     // The can/should be tweaked to suite the specific robot drive train.
     static final double DRIVE_SPEED = 0.4;     // Nominal speed for better accuracy.
-    static final double TURN_SPEED = 0.4;     // Nominal half speed for better accuracy.
+    static final double TURN_SPEED = 0.6;     // Nominal half speed for better accuracy.
 
     static final double HEADING_THRESHOLD = 1;      // As tight as we can make it with an integer gyro
-    static final double P_TURN_COEFF = 0.025;     // Larger is more responsive, but also less stable
+    static final double P_TURN_COEFF = 0.015;     // Larger is more responsive, but also less stable
     static final double P_DRIVE_COEFF = 0.025;     // Larger is more responsive, but also less stable
     static final double GYRO_HOLD_WAIT = 0.5;
     double shootValue = 0.0;
+    int desiredHeading = 0;
+
+    static final double countsPerDonut = 4955.0;
+    static final int moveDoneDelta = (int)(COUNTS_PER_INCH / 4.0);
+
+
 
     @Override
     public void runOpMode() {
@@ -166,23 +177,23 @@ public class AutoGyroDrive extends LinearOpMode {
                 // When "Third Tile." from the ramp corner.
 
 
-                gyroDrive(DRIVE_SPEED, 20.5, heading);
+                gyroDrive(DRIVE_SPEED, 24.5, heading);
                 gyroHold(TURN_SPEED, heading, GYRO_HOLD_WAIT);
                 heading = heading - 45.0;
                 shooterUp.start();
                 gyroTurn(TURN_SPEED, heading);
-                gyroHold(TURN_SPEED, heading, GYRO_HOLD_WAIT);
+                gyroHold(1.0, heading, GYRO_HOLD_WAIT);
                 gyroDrive(DRIVE_SPEED, 49.0, heading);
-                gyroHold(TURN_SPEED, heading, GYRO_HOLD_WAIT);
+                gyroHold(1.0, heading, GYRO_HOLD_WAIT);
                 heading = heading - 45.0;
                 gyroTurn(TURN_SPEED, heading);
-                gyroHold(TURN_SPEED, heading, GYRO_HOLD_WAIT);
+                gyroHold(1.0, heading, GYRO_HOLD_WAIT);
                 runIndexer();
                 sleep(500);
                 shooterDown.start();
-                gyroDrive(DRIVE_SPEED, 9.0, heading);
+                gyroDrive(DRIVE_SPEED, 6.0, heading);
                 beaconPushBlue();
-                gyroDrive(DRIVE_SPEED, 48.0, heading);
+                gyroDrive(DRIVE_SPEED, -48.0, heading);
 
 
 //                shooterUp.start();
@@ -428,13 +439,57 @@ public class AutoGyroDrive extends LinearOpMode {
      *              0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
      *              If a relative angle is required, add/subtract from current heading.
      */
-    public void gyroTurn(double speed, double angle) {
+    public void gyroTurnPID(double speed, double angle) {
 
         // keep looping while we are still active, and not on heading.
         while (opModeIsActive() && !onHeading(speed, angle, P_TURN_COEFF)) {
             // Update telemetry & Allow time for other processes to run.
             telemetry.update();
         }
+    }
+
+    int degreesToCounts(double degrees) {
+        return (int)(degrees * (countsPerDonut / 360.0));
+    }
+
+    void gyroTurn(double speed, double angle) {
+        robot.leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        // Figure out how far off we are at the end of the previous move so we can correct
+        int gyroError =  desiredHeading - gyro.getHeading();
+        if(gyroError > 180) {
+            gyroError = 360 - gyroError;
+        }
+        if (gyroError < -180) {
+            gyroError = 360 + gyroError;
+        }
+        desiredHeading = desiredHeading + (int)angle;
+        if (desiredHeading >= 360) {
+            desiredHeading = desiredHeading - 360;
+        }
+        if (desiredHeading < 0) {
+            desiredHeading = desiredHeading + 360;
+        }
+
+        int leftTargetPosition = robot.leftMotor.getCurrentPosition() + degreesToCounts(angle + gyroError);
+        robot.leftMotor.setTargetPosition(leftTargetPosition);
+        int rightTargetPosition = robot.rightMotor.getCurrentPosition() - degreesToCounts(angle + gyroError);
+        robot.rightMotor.setTargetPosition(rightTargetPosition);
+        robot.leftMotor.setPower(speed);
+        robot.rightMotor.setPower(speed);
+
+        while (opModeIsActive() &&
+                (Math.abs(leftTargetPosition - robot.leftMotor.getCurrentPosition()) < moveDoneDelta) &&
+                (Math.abs(rightTargetPosition - robot.rightMotor.getCurrentPosition()) < moveDoneDelta)) {
+            sleep(50);
+        }
+        robot.leftMotor.setPower(0.0);
+        robot.rightMotor.setPower(0.0);
+
+        robot.leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
     }
 
     /**
@@ -447,7 +502,7 @@ public class AutoGyroDrive extends LinearOpMode {
      *                 If a relative angle is required, add/subtract from current heading.
      * @param holdTime Length of time (in seconds) to hold the specified heading.
      */
-    public void gyroHold(double speed, double angle, double holdTime) {
+    public void gyroHoldPID(double speed, double angle, double holdTime) {
 
         ElapsedTime holdTimer = new ElapsedTime();
 
@@ -462,6 +517,9 @@ public class AutoGyroDrive extends LinearOpMode {
         // Stop all motion;
         robot.leftMotor.setPower(0);
         robot.rightMotor.setPower(0);
+    }
+
+    public void gyroHold(double speed, double angle, double holdTime) {
     }
 
     /**
@@ -588,16 +646,21 @@ public class AutoGyroDrive extends LinearOpMode {
     }
 
     public void beaconPushBlue() {
-        if (robot.beacon.blue() > robot.beacon.red()) {
-            robot.rightServo.setPosition(1.0);
-            sleep(2000);
-            if (robot.beacon.red() > robot.beacon.blue()) {
-                sleep(5000);
-            } else if (robot.beacon.blue() > robot.beacon.red()) {
-                robot.rightServo.setPosition(0.5);
-            }
+        Log.i("Red1 =", String.valueOf(robot.beacon.red()));
+        Log.i("Blue1 =", String.valueOf(robot.beacon.blue()));
+        robot.leftServo.setPosition(1.0);
+        sleep(2000);
+        robot.leftServo.setPosition(0.0);
+        sleep(500);
+        robot.leftServo.setPosition(0.5);
 
-
+        Log.i("Red2 =", String.valueOf(robot.beacon.red()));
+        Log.i("Blue2 =", String.valueOf(robot.beacon.blue()));
+        if (robot.beacon.red() > robot.beacon.blue()) {
+            sleep(5000);
+            robot.leftServo.setPosition(1.0);
+            sleep(1000);
+            robot.leftServo.setPosition(0.5);
         }
     }
 }
