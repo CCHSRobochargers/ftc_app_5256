@@ -35,9 +35,7 @@ import android.util.Log;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.robot.Robot;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -95,14 +93,14 @@ public class AutoGyroDrive extends LinearOpMode {
     // These constants define the desired driving/control characteristics
     // The can/should be tweaked to suite the specific robot drive train.
     static final double DRIVE_SPEED = 0.4;     // Nominal speed for better accuracy.
-    static final double TURN_SPEED = 0.6;     // Nominal half speed for better accuracy.
+    static final double TURN_SPEED = 1.0;     // Nominal half speed for better accuracy.
 
     static final double HEADING_THRESHOLD = 1;      // As tight as we can make it with an integer gyro
-    static final double P_TURN_COEFF = 0.015;     // Larger is more responsive, but also less stable
+    static final double P_TURN_COEFF = 0.005;     // Larger is more responsive, but also less stable
     static final double P_DRIVE_COEFF = 0.025;     // Larger is more responsive, but also less stable
     static final double GYRO_HOLD_WAIT = 0.5;
     double shootValue = 0.0;
-    int desiredHeading = 0;
+    int currentHeading = 0;
 
     static final double countsPerDonut = 4955.0;
     static final int moveDoneDelta = (int)(COUNTS_PER_INCH / 4.0);
@@ -422,6 +420,48 @@ public class AutoGyroDrive extends LinearOpMode {
         }
     }
 
+    int degreesToCounts(double degrees) {
+        return (int)(degrees * (countsPerDonut / 360.0));
+    }
+
+    void gyroTurnNEW(double speed, double newHeading) {
+        int angle = (int)newHeading - currentHeading;
+
+        robot.leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        // Figure out how far off we are at the end of the previous move so we can correct
+        int gyroError =  angle + (currentHeading - gyro.getHeading());
+        while (gyroError > 180) {
+            gyroError = 360 - gyroError;
+        }
+        while (gyroError < -180) {
+            gyroError = 360 + gyroError;
+        }
+        currentHeading = (int)newHeading;
+
+        int leftTargetPosition = robot.leftMotor.getCurrentPosition() + degreesToCounts(gyroError);
+        robot.leftMotor.setTargetPosition(leftTargetPosition);
+        int rightTargetPosition = robot.rightMotor.getCurrentPosition() - degreesToCounts(gyroError);
+        robot.rightMotor.setTargetPosition(rightTargetPosition);
+        robot.leftMotor.setPower(speed);
+        robot.rightMotor.setPower(speed);
+
+        while (opModeIsActive() &&
+                (Math.abs(leftTargetPosition - robot.leftMotor.getCurrentPosition()) > moveDoneDelta) &&
+                (Math.abs(rightTargetPosition - robot.rightMotor.getCurrentPosition()) > moveDoneDelta)) {
+            sleep(50);
+            telemetry.addData("Left", Math.abs(leftTargetPosition - robot.leftMotor.getCurrentPosition()));
+            telemetry.addData("Right", Math.abs(rightTargetPosition - robot.rightMotor.getCurrentPosition()));
+            telemetry.update();
+        }
+        robot.leftMotor.setPower(0.0);
+        robot.rightMotor.setPower(0.0);
+
+        robot.leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
     public void gyroDrive(double speed,
                           double distance,
                           double angle) {
@@ -439,7 +479,7 @@ public class AutoGyroDrive extends LinearOpMode {
      *              0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
      *              If a relative angle is required, add/subtract from current heading.
      */
-    public void gyroTurnPID(double speed, double angle) {
+    public void gyroTurn(double speed, double angle) {
 
         // keep looping while we are still active, and not on heading.
         while (opModeIsActive() && !onHeading(speed, angle, P_TURN_COEFF)) {
@@ -448,49 +488,6 @@ public class AutoGyroDrive extends LinearOpMode {
         }
     }
 
-    int degreesToCounts(double degrees) {
-        return (int)(degrees * (countsPerDonut / 360.0));
-    }
-
-    void gyroTurn(double speed, double angle) {
-        robot.leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        // Figure out how far off we are at the end of the previous move so we can correct
-        int gyroError =  desiredHeading - gyro.getHeading();
-        if(gyroError > 180) {
-            gyroError = 360 - gyroError;
-        }
-        if (gyroError < -180) {
-            gyroError = 360 + gyroError;
-        }
-        desiredHeading = desiredHeading + (int)angle;
-        if (desiredHeading >= 360) {
-            desiredHeading = desiredHeading - 360;
-        }
-        if (desiredHeading < 0) {
-            desiredHeading = desiredHeading + 360;
-        }
-
-        int leftTargetPosition = robot.leftMotor.getCurrentPosition() + degreesToCounts(angle + gyroError);
-        robot.leftMotor.setTargetPosition(leftTargetPosition);
-        int rightTargetPosition = robot.rightMotor.getCurrentPosition() - degreesToCounts(angle + gyroError);
-        robot.rightMotor.setTargetPosition(rightTargetPosition);
-        robot.leftMotor.setPower(speed);
-        robot.rightMotor.setPower(speed);
-
-        while (opModeIsActive() &&
-                (Math.abs(leftTargetPosition - robot.leftMotor.getCurrentPosition()) < moveDoneDelta) &&
-                (Math.abs(rightTargetPosition - robot.rightMotor.getCurrentPosition()) < moveDoneDelta)) {
-            sleep(50);
-        }
-        robot.leftMotor.setPower(0.0);
-        robot.rightMotor.setPower(0.0);
-
-        robot.leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-    }
 
     /**
      * Method to obtain & hold a heading for a finite amount of time
@@ -502,7 +499,7 @@ public class AutoGyroDrive extends LinearOpMode {
      *                 If a relative angle is required, add/subtract from current heading.
      * @param holdTime Length of time (in seconds) to hold the specified heading.
      */
-    public void gyroHoldPID(double speed, double angle, double holdTime) {
+    public void gyroHold(double speed, double angle, double holdTime) {
 
         ElapsedTime holdTimer = new ElapsedTime();
 
@@ -519,7 +516,7 @@ public class AutoGyroDrive extends LinearOpMode {
         robot.rightMotor.setPower(0);
     }
 
-    public void gyroHold(double speed, double angle, double holdTime) {
+    public void gyroHoldNEW(double speed, double angle, double holdTime) {
     }
 
     /**
