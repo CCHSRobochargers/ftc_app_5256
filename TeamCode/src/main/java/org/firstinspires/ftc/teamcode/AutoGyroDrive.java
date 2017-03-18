@@ -96,7 +96,8 @@ public class AutoGyroDrive extends LinearOpMode {
     static final double TURN_SPEED = 1.0;     // Nominal half speed for better accuracy.
 
     static final double HEADING_THRESHOLD = 1;      // As tight as we can make it with an integer gyro
-    static final double P_TURN_COEFF = 0.005;     // Larger is more responsive, but also less stable
+    static final double P_TURN_COEFF = 0.005;
+    static final double P_HOLD_COEFF = 0.05;  // Larger is more responsive, but also less stable
     static final double P_DRIVE_COEFF = 0.025;     // Larger is more responsive, but also less stable
     static final double GYRO_HOLD_WAIT = 0.5;
     double shootValue = 0.0;
@@ -174,15 +175,12 @@ public class AutoGyroDrive extends LinearOpMode {
             if (robot.thirdTile.getState()) {
                 // When "Third Tile." from the ramp corner.
 
-
-                gyroDrive(DRIVE_SPEED, 24.5, heading);
-                gyroHold(TURN_SPEED, heading, GYRO_HOLD_WAIT);
+                gyroDrive(DRIVE_SPEED, 22.0, heading);
                 heading = heading - 45.0;
                 shooterUp.start();
                 gyroTurn(TURN_SPEED, heading);
                 gyroHold(1.0, heading, GYRO_HOLD_WAIT);
                 gyroDrive(DRIVE_SPEED, 49.0, heading);
-                gyroHold(1.0, heading, GYRO_HOLD_WAIT);
                 heading = heading - 45.0;
                 gyroTurn(TURN_SPEED, heading);
                 gyroHold(1.0, heading, GYRO_HOLD_WAIT);
@@ -507,7 +505,7 @@ public class AutoGyroDrive extends LinearOpMode {
         holdTimer.reset();
         while (opModeIsActive() && (holdTimer.time() < holdTime)) {
             // Update telemetry & Allow time for other processes to run.
-            onHeading(speed, angle, P_TURN_COEFF);
+            onHeading(speed, angle, P_HOLD_COEFF);
             telemetry.update();
         }
 

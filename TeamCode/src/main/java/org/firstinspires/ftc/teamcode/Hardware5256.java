@@ -95,7 +95,8 @@ public class Hardware5256
 
         sweeper.setDirection(DcMotor.Direction.REVERSE);
         sweeper.setPower(0);
-        hopper.setPosition(0.6);
+        hopper.setPosition(hopperDown);
+        kicker.setPosition(kickerDown);
         leftServo.setPosition(0.5);
         rightServo.setPosition(0.5);
         beacon.enableLed(false);
