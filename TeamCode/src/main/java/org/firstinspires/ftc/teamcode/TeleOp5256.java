@@ -210,14 +210,6 @@ public class TeleOp5256 extends LinearOpMode {
                 bblock = false;
             }
 
-            if (gamepad2.x) {
-                //robot.arm.setPosition(0.3);
-            }
-
-            if (gamepad2.y) {
-                //robot.arm.setPosition(0.0);
-            }
-
             if (gamepad1.a) {
                 robot.sweeper.setPower(.45);
             }
@@ -283,7 +275,7 @@ public class TeleOp5256 extends LinearOpMode {
             if (gamepad1.right_trigger > 0.5 ) {
                 //lefthop = true;
                 robot.hopper.setPosition(robot.hopperUp);
-                robot.sweeper.setPower(-0.45);
+                //robot.sweeper.setPower(-0.45);
             }
 
             if (gamepad1.left_trigger > 0.5 ) {
@@ -301,15 +293,14 @@ public class TeleOp5256 extends LinearOpMode {
                 robot.rightServo.setPosition(0.5);
             }
 
-
-
-
-
-
-
-
-
-
+            if (gamepad2.x) {
+                robot.leftFork.setPosition(robot.leftForkLatched);
+                robot.rightFork.setPosition(robot.rightForkLatched);
+            }
+            if (gamepad2.y) {
+                robot.leftFork.setPosition(robot.leftForkUnlatched);
+                robot.rightFork.setPosition(robot.rightForkUnlatched);
+            }
 
             // eg: Run wheels in tank mode (note: The joystick goes negative when pushed forwards)
             // leftMotor.setPower(-gamepad1.left_stick_y);

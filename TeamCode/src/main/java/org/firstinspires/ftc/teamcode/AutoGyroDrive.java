@@ -596,16 +596,24 @@ public class AutoGyroDrive extends LinearOpMode {
     }
 
     public void runIndexer() {
-        robot.sweeper.setPower(-.45);
         robot.kicker.setPosition(robot.kickerDown);
+        if (opModeIsActive()) {
+            sleep(500);
+        }
+        robot.kicker.setPosition(.50);
         if (opModeIsActive()) {
             sleep(500);
         }
         robot.kicker.setPosition(robot.kickerUp);
         if (opModeIsActive()) {
-            sleep(50);
+            sleep(500);
         }
         robot.kicker.setPosition(robot.kickerDown);
+        if (opModeIsActive()) {
+            sleep(200);
+        }
+        robot.hopper.setPosition(robot.hopperUp);
+        robot.sweeper.setPower(-.45);
         if (opModeIsActive()) {
             sleep(500);
         }

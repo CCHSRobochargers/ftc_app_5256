@@ -41,12 +41,20 @@ public class Hardware5256
     public Servo hopper                  = null;
     public Servo rightServo              = null;
     public Servo leftServo               = null;
+    public Servo leftFork                = null;
+    public Servo rightFork               = null;
 
     public static final double kickerUp = 0.73;
     public static final double kickerDown = 0.93;
 
-    public static final double hopperUp = 0.9;
-    public static final double hopperDown = 0.43;
+    public static final double hopperUp = 0.8;
+    public static final double hopperDown = 0.3;
+
+    public static final double leftForkLatched = 0.7;
+    public static final double leftForkUnlatched = 0.9;
+
+    public static final double rightForkLatched = 0.3;
+    public static final double rightForkUnlatched = 0.1;
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
@@ -74,9 +82,8 @@ public class Hardware5256
         hopper = hwMap.servo.get("hop");
         leftServo = hwMap.servo.get("leftServo");
         rightServo = hwMap.servo.get("rightServo");
-
-
-
+        leftFork = hwMap.servo.get("lFork");
+        rightFork = hwMap.servo.get("rFork");
 
         kicker.setPosition(kickerDown);
 
@@ -100,6 +107,8 @@ public class Hardware5256
         leftServo.setPosition(0.5);
         rightServo.setPosition(0.5);
         beacon.enableLed(false);
+        leftFork.setPosition(leftForkLatched);
+        rightFork.setPosition(rightForkLatched);
 
         // Set all motors to zero power
         leftMotor.setPower(0);
