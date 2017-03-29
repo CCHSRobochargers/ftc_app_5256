@@ -167,15 +167,15 @@ public class AutoGyroDrive extends LinearOpMode {
         }
         gyro.resetZAxisIntegrator();
 
-        ShooterCtlrThread shooterUp = new ShooterCtlrThread(robot.leftShoot, robot.rightShoot, 0.0, 0.25, 1000);
-        ShooterCtlrThread shooterDown = new ShooterCtlrThread(robot.leftShoot, robot.rightShoot, 0.25, 0.0, 2000);
+        ShooterCtlrThread shooterUp = new ShooterCtlrThread(robot.leftShoot, robot.rightShoot, 0.0, 0.22, 1000);
+        ShooterCtlrThread shooterDown = new ShooterCtlrThread(robot.leftShoot, robot.rightShoot, 0.22, 0.0, 2000);
         telemetry.addData(">", "Robot Heading Post-Reset = %d", gyro.getIntegratedZValue());
         if (robot.blueAlliance.getState()) {
             // blue alliance moves
             if (robot.thirdTile.getState()) {
                 // When "Third Tile." from the ramp corner.
 
-                gyroDrive(DRIVE_SPEED, 22.0, heading);
+                gyroDrive(DRIVE_SPEED, 23.0, heading);
                 heading = heading - 45.0;
                 shooterUp.start();
                 gyroTurn(TURN_SPEED, heading);
@@ -189,7 +189,14 @@ public class AutoGyroDrive extends LinearOpMode {
                 shooterDown.start();
                 gyroDrive(DRIVE_SPEED, 6.0, heading);
                 beaconPushBlue();
+                gyroDrive(DRIVE_SPEED, -4.0, heading);
+                heading = heading - 25;
+                gyroTurn(TURN_SPEED, heading);
+                gyroDrive(DRIVE_SPEED, -18, heading);
+                heading = heading + 45;
+                gyroTurn(TURN_SPEED, heading);
                 gyroDrive(DRIVE_SPEED, -48.0, heading);
+
 
 
 //                shooterUp.start();
@@ -254,8 +261,14 @@ public class AutoGyroDrive extends LinearOpMode {
                 runIndexer();
                 sleep(500);
                 shooterDown.start();
-                gyroDrive(DRIVE_SPEED, 6.0, heading);
+                gyroDrive(DRIVE_SPEED, 9.0, heading);
                 beaconPushRed();
+                gyroDrive(DRIVE_SPEED, -4.0, heading);
+                heading = heading + 25;
+                gyroTurn(TURN_SPEED, heading);
+                gyroDrive(DRIVE_SPEED, -18, heading);
+                heading = heading -45;
+                gyroTurn(TURN_SPEED, heading);
                 gyroDrive(DRIVE_SPEED, -48.0, heading);
 
 //                shooterUp.start();
@@ -587,7 +600,7 @@ public class AutoGyroDrive extends LinearOpMode {
     }
 
     public void upShooter() {
-        while (opModeIsActive() && shootValue < 0.25) {
+        while (opModeIsActive() && shootValue < 0.2) {
             shootValue += 0.02;
             robot.rightShoot.setPower(shootValue);
             robot.leftShoot.setPower(shootValue);
